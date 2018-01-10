@@ -1,0 +1,104 @@
+
+.Tile {
+  position: absolute;
+  text-align: center;
+  font-size:8em;
+  color:#000;
+    outline: 1px solid transparent;
+
+
+
+  left:0;
+  top:0;
+
+  background: #000000;
+  -webkit-box-shadow:
+          inset 0px -2px 1px 1px rgba(35,35,14,0.3),/*bottom internal shadow*/
+          inset 0px 2px 1px 1px rgba(217, 245, 255, 0.2), /*top internal highlight*/
+          inset -2px 0px 1px 1px rgba(35,35,14,0.3),/*right*/
+          inset 2px 0px 1px 1px rgba(217, 245, 255, 0.2); /*left*/
+  -moz-box-shadow:
+          inset 0px -2px 1px 1px rgba(35,35,14,0.3),/*bottom internal shadow*/
+          inset 0px 2px 1px 1px rgba(217, 245, 255, 0.2), /*top internal highlight*/
+          inset -2px 0px 1px 1px rgba(35,35,14,0.3),/*right*/
+          inset 2px 0px 1px 1px rgba(217, 245, 255, 0.2); /*left*/
+  box-shadow:
+          inset 0px -2px 1px 1px rgba(35,35,14,0.3),/*bottom internal shadow*/
+          inset 0px 2px 1px 1px rgba(217, 245, 255, 0.2), /*top internal highlight*/
+          inset -2px 0px 1px 1px rgba(35,35,14,0.3),/*right*/
+          inset 2px 0px 1px 1px rgba(217, 245, 255, 0.2); /*left*/
+
+
+
+
+}
+
+.TileTxt {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+}
+
+
+.Grid {
+
+  position:relative;
+  transform-origin: 0 0;
+  display:inline-block;
+  background-color: #a3bbce;
+
+}
+
+.bg-image {
+  visibility:hidden;
+}
+
+
+.grid-container {
+
+  background-color: white;
+  position:relative;
+  float:right;
+
+}
+
+
+.game-container{
+
+  background-color:black;
+  max-width:1024px;
+  margin:0 auto;
+
+
+}
+
+.game-area {
+  background-color: mintcream;
+  height:100vh;
+  width:100vw;
+}
+
+.nav {
+
+
+  background-color: #c2dbee;
+  position:relative;
+  float:left;
+
+}
+
+.nav button {
+
+    text-overflow:ellipsis;
+  background:transparent;
+  font-size:3vw;
+  text-align:center;
+  outline:none;
+    border:none;
+
+}
+
