@@ -6,9 +6,6 @@ import {getRandom} from "../libs/eldUtils";
 
 class GameView extends Component {
 
-    //puzzle
-    //ui - btns (new puzzle, 3/4), solve, hint?
-    //moves counter, clear with new puzzle
 
     constructor() {
 
@@ -145,7 +142,6 @@ class GameView extends Component {
                 const scaleForHeight = maxHeight/this.state.imgHeight;
                 puzzleScale = scaleForHeight;
                 if(this.state.imgWidth * scaleForHeight > puzzleAreaWidth){
-                    console.log('no room landscape');
                     puzzleScale = puzzleScale * puzzleAreaWidth/(this.state.imgWidth * scaleForHeight);
                 }
 
@@ -153,14 +149,9 @@ class GameView extends Component {
                 const scaleForWidth = maxWidth/this.state.imgWidth;
                 puzzleScale = scaleForWidth;
                 if(this.state.imgHeight * scaleForWidth > puzzleAreaHeight){
-                    console.log("no room portrait");
                     puzzleScale = puzzleScale * puzzleAreaHeight/(this.state.imgHeight * scaleForWidth);
                 }
             }
-
-
-
-            console.log('puzzle scale: ' + puzzleScale);
 
 
             const containerstyle = {

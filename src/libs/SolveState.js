@@ -1,18 +1,16 @@
-import {numArrayToString} from "./eldUtils"
 
 class SolveState {
     constructor(sequence, moves){
 
-        console.log("new state: " + sequence);
+        //console.log("new state: " + sequence);
+        //depth stored in moves lengths
+        this.moves = moves;
         //sequence as string
-        this.id = numArrayToString(sequence);
+        this.id = sequence.toString();
         //sequence as array
         this.sequence = sequence;
 
-        //depth stored in moves lengths
-        this.moves = moves;
 
-        //
 
     }
 

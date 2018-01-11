@@ -12,14 +12,14 @@ class PriorityQueue {
         return this.heap.length;
     };
 
-    //return highest priority
     getHighestPriority = () => {
 
         let result = this.heap[0];
-
         //delete this.map[this.idFunction(result)];
 
         let end = this.heap.pop();
+
+
         if(this.heap.length > 0){
             this.heap[0] = end;
             this.sink(0);
@@ -30,12 +30,11 @@ class PriorityQueue {
 
     push = (queueItem) => {
 
+        if(this.map[this.idFunction(queueItem)]){
 
-        /*if(this.map[this.idFunction(queueItem)]){
-
-            console.log("already in heap");
+            //console.log("already in heap");
             return;
-        }*/
+        }
 
         this.heap.push(queueItem);
         this.map[this.idFunction(queueItem)] = queueItem;
@@ -57,7 +56,6 @@ class PriorityQueue {
             if(score >= parentscore) break;
 
             //swap with parent node if less
-
             this.map[this.idFunction(elem)] = parentNode;
             this.map[this.idFunction(parentElem)] = node;
 
@@ -81,10 +79,11 @@ class PriorityQueue {
         let len = this.heap.length;
         let elem = this.heap[node];
         let score = this.scoreFunction(elem);
-        let swap = null;
+
 
         while(true){
 
+            let swap = null;
             let childBIndex = (node + 1) * 2;
             let childAIndex = childBIndex - 1;
             let aScore;
@@ -104,7 +103,7 @@ class PriorityQueue {
                 }
             }
 
-            if(swap === null) break;
+            if(swap == null) break;
 
             this.map[this.idFunction(this.heap[swap])] = node;
             this.map[this.idFunction(elem)] = swap;

@@ -108,11 +108,12 @@ class GridModel {
 
     getSolution = () => {
 
+        console.log("get solution");
         //start astar
         let solver = new Solver();
         //return array of moves
-        this.solution = solver.solvePuzzleAStar(this.getTiles());
-        //solver.solvePuzzleFringe(this.getTiles());
+        //this.solution = solver.solvePuzzleAStar(this.getTiles());
+        this.solution = solver.solvePuzzleFringe(this.getTiles());
 
         console.log("and the solution is..." + this.solution);
 

@@ -1,6 +1,5 @@
 import PriorityQueue from "./PriorityQueue";
 import SolveState from "./SolveState";
-import {numArrayToString} from "./eldUtils"
 
 
 class Solver {
@@ -9,13 +8,11 @@ class Solver {
 
 
 
-
-
-
     }
 
     solvePuzzleAStar(initial){
 
+        console.log("start a star");
         let moves = [];
         this.gridSize = (Math.sqrt(initial.length));
         this.queue = new PriorityQueue((item)=>(item.cost),(item)=>(item.id));
@@ -24,6 +21,8 @@ class Solver {
         let initialState = new SolveState(initial,moves);
         initialState.cost = initialState.moves.length + getHeuristics(initialState.sequence,this.gridSize);
         this.queue.push(initialState);
+
+
 
         let topNode = initialState;
 
@@ -34,9 +33,6 @@ class Solver {
 
             topNode = this.queue.getHighestPriority();
             //get misplaced tiles heuristic and check for solution
-            console.log("how many moves" + topNode.moves.length);
-
-
 
             //if found solution, stop, complete path
             if(getMisplaced(topNode.sequence) === 0){
@@ -57,18 +53,31 @@ class Solver {
         return topNode.moves;
     }
 
-    solvePuzzleFringe(startArr){
-        let start = numArrayToString(startArr);
+    solvePuzzlePattern(startArr){
+        let solution = startArr;
 
-        let fringe = [start];
-        let listCache = {};
+        //first 7
+        solution = this.solvePuzzleFringe(solution,[1,2,3,4])
+        //last 8
+
+    }
+
+    solvePuzzleFringe(startArr,pattern){
+
+
+        let start = startArr.toString();
+
+
+        const fringe = [start];
+        const listCache = {};
 
 
         let found = false;
-        let size = (Math.sqrt(startArr.length));
-        let cost = 1;
+        const size = (Math.sqrt(startArr.length));
+        const cost = 1;
         let flimit = getHeuristics(startArr,size);
         listCache[start] = [0,null];
+        const moves = [];
 
         while(fringe.length > 0 && !found){
 
@@ -78,19 +87,38 @@ class Solver {
 
                 //console.log("check fringe");
 
-                let fringeNode = fringe[i];
-                let g = listCache[fringeNode][0];
-                let parent = listCache[fringeNode][1];
-                let fringeArr = stringToArrayThatWorks(fringeNode);
-                let f = g + getHeuristics(fringeArr,size);
+                const fringeNode = fringe[i];
+                const g = listCache[fringeNode][0];
+                const parent = listCache[fringeNode][1];
+                const fringeArr = stringToNumArray(fringeNode);
+                const f = g + getHeuristics(fringeArr,size,pattern);
 
                 if(f > flimit){
                     fmin = Math.min(f,fmin);
                     continue;
                 }
 
-                if(getMisplaced(fringeArr) === 0){
-                    console.log("found!!");
+                if(getMisplaced(fringeArr,pattern) === 0){
+                    console.log("found!!" + fringeArr);
+                    //construct path back with lookup of parents stored in cache
+
+                    let stepArr = fringeArr;
+                    let nextStep = parent;
+                    while(nextStep ){
+
+                        console.log("next step: " + nextStep);
+                        //move is number switched with blank (last num) between current and parent sequence
+                        const parentStep = listCache[nextStep][1];
+                        if(parentStep){
+                            const parArr = stringToNumArray(parentStep);
+                            const move = stepArr[parArr.indexOf(parArr.length)];
+                            moves.unshift(move);
+                            stepArr = parArr;
+                        }
+
+                        nextStep = parentStep;
+
+                    }
                     found = true;
                     break;
 
@@ -99,13 +127,13 @@ class Solver {
                 let childNodes = expandNode(fringeNode,parent,size);
 
                 childNodes.forEach((child)=> {
-                    let childG = g + cost;
+                    const childG = g + cost;
                     if(listCache[child]){
                         let cachedG = listCache[child][0];
                         if(cachedG <= childG) return;
                     }
 
-                    let index = fringe.indexOf(child);
+                    const index = fringe.indexOf(child);
                     if(index !== -1){
                         fringe.splice(index,1);
                         if(index <= i) i--;
@@ -126,40 +154,37 @@ class Solver {
             if(fringe.length === 0) console.log("not found");
         }
 
-
+        return moves;
 
     }
+
 }
+
 
 export default Solver
 
 const expandNode = (node, parent, size) => {
 
-    //let nodeArr = node.split();
-    let nodeArr = stringToArrayThatWorks(node);
-    let parentArr = (parent) ? stringToArrayThatWorks(parent) : null;
+    const nodeArr = stringToNumArray(node);
+    const parentArr = (parent) ? stringToNumArray(parent) : null;
+    const possibleMoves = getAllMoves(nodeArr, size);
+    const blankParentIndex = (!parent || !parentArr) ? null :parentArr.indexOf(parentArr.length);
 
-    //console.log("expanding?? " + nodeArr.length + ", size? " + size);
-    let possibleMoves = getAllMoves(nodeArr, size);
-
-    let blankParentIndex = (!parent || !parentArr) ? null :parentArr.indexOf(parentArr.length);
-
-    let childStrings = [];
+    const childStrings = [];
     for(let i = 0; i< possibleMoves.length; i++) {
 
-        let moveIndex = nodeArr.indexOf(possibleMoves[i]);
-        let blankIndex = nodeArr.indexOf(nodeArr.length);
+        const moveIndex = nodeArr.indexOf(possibleMoves[i]);
+        const blankIndex = nodeArr.indexOf(nodeArr.length);
 
         if(moveIndex === blankParentIndex) continue;
 
         let newSequence = nodeArr.slice(0);
-        let temp = newSequence[blankIndex];
-        let temp2 = Number(possibleMoves[i]);
+        const temp = newSequence[blankIndex];
+        const temp2 = Number(possibleMoves[i]);
         newSequence[blankIndex] = temp2;
         newSequence[moveIndex] = temp;
 
-        //console.log("what's the issue??" + newSequence);
-        let s = numArrayToString(newSequence);
+        const s = newSequence.toString();
         childStrings.push(s);
 
     }
@@ -169,14 +194,11 @@ const expandNode = (node, parent, size) => {
 
 const expandState = (state,queue,size,visited) =>{
 
-
-    let idStr = state.id + state.moves.length.toString();
+    const idStr = state.id;
     visited[idStr] = state;
 
-    let possibleMoves = getAllMoves(state.sequence, size);
-    //create new state from each swap plus move (as number of tile moved swapped with blank)
-    console.log("possible moves? " + possibleMoves.length);
-    let l = possibleMoves.length;
+    const possibleMoves = getAllMoves(state.sequence, size);
+    const l = possibleMoves.length;
     for(let i = 0; i< l; i++){
 
         if(state.moves[state.moves.length - 1] ===  possibleMoves[i]){
@@ -184,23 +206,23 @@ const expandState = (state,queue,size,visited) =>{
 
         }else{
 
-            let newSequence = state.sequence.slice(0);
-            console.log("new sequence: " + newSequence);
-            let len = newSequence.length;
-            let moveIndex = newSequence.indexOf(possibleMoves[i]);
-            let blankIndex = newSequence.indexOf(len);
-            let temp = newSequence[blankIndex];
-            let temp2 = Number(possibleMoves[i]);
+            const newSequence = state.sequence.slice(0);
+            //console.log("new sequence: " + newSequence);
+            const len = newSequence.length;
+            const moveIndex = newSequence.indexOf(possibleMoves[i]);
+            const blankIndex = newSequence.indexOf(len);
+            const temp = newSequence[blankIndex];
+            const temp2 = Number(possibleMoves[i]);
             newSequence[blankIndex] = temp2;
             newSequence[moveIndex] = temp;
 
-            let newMoves = state.moves.slice(0);
+            const newMoves = state.moves.slice(0);
             newMoves.push(possibleMoves[i]);
 
-            let newState = new SolveState(newSequence,newMoves);
-            let newIdStr = newState.id + newState.moves.length.toString();
+            const newState = new SolveState(newSequence,newMoves);
+            const newIdStr = newState.id;
 
-            if(!visited[newIdStr] && newMoves.length < 50){
+            if(!visited[newIdStr] && newMoves.length < 32){
                 newState.cost = newMoves.length + getHeuristics(newState.sequence,size);
 
                 queue.push(newState)
@@ -214,14 +236,14 @@ const expandState = (state,queue,size,visited) =>{
 const getHeuristics = (sequence, size) => {
     //return Math.max(manhattan(sequence, size),linearConflict(sequence, size));
 
-    return manhattan(sequence,size) + linearConflict(sequence,size);
+    return manhattan(sequence,size);
 
 };
 
 const getGridCoordinates = (index,size) => {
 
-    let y = Math.floor(index/size);
-    let x = index - (y * size);
+    const y = Math.floor(index/size);
+    const x = index - (y * size);
 
     return {x:x,y:y};
 
@@ -234,33 +256,32 @@ const getIndexByCoordinates = (x,y,size) => {
 
 const getAllMoves = (sequence, size) => {
 
-    let moves = [];
+    const moves = [];
 
     //find index of blank
-    let blank = sequence.indexOf(sequence.length);
+    const blank = sequence.indexOf(sequence.length);
     //get grid position of blank
-    let blankCoord = getGridCoordinates(blank,size);
+    const blankCoord = getGridCoordinates(blank,size);
     //add existing surrounding numbers to moves
     //add to the left
 
     if(blankCoord.x > 0) {
-        let left = getIndexByCoordinates(blankCoord.x - 1, blankCoord.y, size);
+        const left = getIndexByCoordinates(blankCoord.x - 1, blankCoord.y, size);
         moves.push(sequence[left]);
-
     }
 
     if(blankCoord.x < size - 1){
-        let right = getIndexByCoordinates(blankCoord.x + 1,blankCoord.y, size);
+        const right = getIndexByCoordinates(blankCoord.x + 1,blankCoord.y, size);
         moves.push(sequence[right]);
     }
 
     if(blankCoord.y > 0){
-        let t = getIndexByCoordinates(blankCoord.x,blankCoord.y - 1, size);
+        const t = getIndexByCoordinates(blankCoord.x,blankCoord.y - 1, size);
         moves.push(sequence[t]);
     }
 
     if(blankCoord.y < size - 1){
-        let b = getIndexByCoordinates(blankCoord.x,blankCoord.y + 1, size);
+        const b = getIndexByCoordinates(blankCoord.x,blankCoord.y + 1, size);
         moves.push(sequence[b]);
     }
 
@@ -268,11 +289,11 @@ const getAllMoves = (sequence, size) => {
     return moves;
 };
 
-export const getMisplaced = (set) => {
+export const getMisplaced = (set, pattern) => {
     let misplaced = 0;
     let i = 0;
     while(i < set.length){
-        if(set[i] !== (i + 1)) misplaced++;
+        if((!pattern || pattern[i] !== "x") && set[i] !== (i + 1)) misplaced++;
         i++;
     }
 
@@ -280,7 +301,7 @@ export const getMisplaced = (set) => {
 
 };
 
-const manhattan = (set, size) => {
+const manhattan = (set, size, pattern) => {
     let cost = 0;
 
     set.forEach((item, index, arr) => {
@@ -288,14 +309,19 @@ const manhattan = (set, size) => {
         if(item === arr.length){
             //don't factor in last number used for blank)
         }else{
-            let indexCoor = getGridCoordinates(index, size);
-            //get grid position of target (number content of array - 1)
-            let targetCoor = getGridCoordinates(item - 1, size);
+            if(pattern && pattern[item] === "x"){
 
-            let xMoves = Math.abs(indexCoor.x - targetCoor.x);
-            let yMoves = Math.abs(indexCoor.y - targetCoor.y);
+            }else{
+                let indexCoor = getGridCoordinates(index, size);
+                //get grid position of target (number content of array - 1)
+                let targetCoor = getGridCoordinates(item - 1, size);
 
-            cost += (xMoves + yMoves)
+                let xMoves = Math.abs(indexCoor.x - targetCoor.x);
+                let yMoves = Math.abs(indexCoor.y - targetCoor.y);
+
+                cost += (xMoves + yMoves)
+            }
+
         }
 
     });
@@ -311,13 +337,13 @@ const linearConflict = (set, size) => {
 
     //check rows in conflict
     for(let i = 0; i < size; i++){
-        let row = [];
+        const row = [];
         let factor = 0;
         while(factor < size){
             row.push((i * size) + factor);
             factor++;
         }
-        let len = row.length;
+        const len = row.length;
         for(let j = 1; j < len; j++){
             let k = j - 1;
             while(k){
@@ -335,14 +361,14 @@ const linearConflict = (set, size) => {
     //check columns in conflict
     for(let c = 0; c < size; c++){
         //find indices in column
-        let column = [];
+        const column = [];
         let f = 0;
         while(f < size){
             column.push((f * size) + c);
             f++
         }
 
-        let columnLen = column.length;
+        const columnLen = column.length;
         for(let s = 1; s < columnLen; s++){
             let p = s - 1;
             while(p){
@@ -356,22 +382,16 @@ const linearConflict = (set, size) => {
 
         }
 
-
     }
 
 
     return conflictCost;
 };
 
-const stringToArrayThatWorks = (str) => {
 
-    /*let arr = [];
-    while(arr.length < str.length){
-
-        arr.push(Number(str.charAt(arr.length)));
-    }*/
-
-    let arr = str.split(",");
+//to convert split string into array of numbers, (instead of strings as str.split('') does)
+const stringToNumArray = (str) => {
+    const arr = str.split(",");
     let i = 0;
     while(i < arr.length){
         arr[i] = Number(arr[i]);

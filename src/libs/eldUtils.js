@@ -19,12 +19,3 @@ export const shuffleArray = (arr) => {
     return arr;
 };
 
-export const numArrayToString = (arr) => {
-    let str = "";
-    arr.forEach((item, index, arr)=> {
-
-        str += item.toString();
-        if(index !== arr.length - 1) str += ","
-    });
-    return str;
-};
