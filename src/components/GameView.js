@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Puzzle from './Puzzle';
 import GameUi from './GameUi';
-import {getRandom} from "../libs/eldUtils";
+import {getRandom} from "../libs/utils";
 
 class GameView extends Component {
 
@@ -15,7 +15,7 @@ class GameView extends Component {
             puzzleSrc:null,
             puzzleWidth:null,
             puzzleHeight:null,
-            puzzleSize:3
+            puzzleSize:4
         };
 
         this.solving = false;
@@ -27,7 +27,9 @@ class GameView extends Component {
     };
 
     setImageRef = (img) => {
+
         this.imageRef = img;
+
     };
 
     imageReady = () => {
@@ -35,8 +37,6 @@ class GameView extends Component {
         //get image size
         let w = this.imageRef.naturalWidth;
         let h = this.imageRef.naturalHeight;
-        //crop?
-        //resize?
 
         this.setState((state,props) => {
             return {
@@ -130,28 +130,51 @@ class GameView extends Component {
             const orientation = (Math.min(viewWidth, viewHeight) === viewHeight) ? "landscape" : "portrait";
             if(viewWidth > 1024) viewWidth = 1024;
             let puzzleScale = 1;
-            let puzzleAreaWidth = (orientation === "landscape") ? viewWidth - (viewWidth * 0.15) : viewWidth;
-            let puzzleAreaHeight = (orientation === "landscape") ? viewHeight : viewHeight - (viewHeight * 0.2);
-            const maxHeight = (puzzleAreaHeight > this.state.imgHeight) ? this.state.imgHeight : puzzleAreaHeight;
-            const maxWidth = (puzzleAreaWidth > this.state.imgWidth) ? this.state.imgWidth : puzzleAreaWidth;
-
-
+            let gameAreaWidth = viewWidth;
+            let gameAreaHeight = (orientation === "landscape" && this.state.imgHeight < viewHeight)  ? this.state.imgHeight : viewHeight;
+            let puzzleAreaWidth = (orientation === "landscape") ? gameAreaWidth - (gameAreaWidth * 0.15) :  gameAreaWidth;
+            let puzzleAreaHeight = (orientation === "landscape") ? gameAreaHeight : gameAreaHeight - (gameAreaHeight * 0.2);
 
             if(orientation === "landscape"){
 
-                const scaleForHeight = maxHeight/this.state.imgHeight;
+                const scaleForHeight = puzzleAreaHeight/this.state.imgHeight;
                 puzzleScale = scaleForHeight;
                 if(this.state.imgWidth * scaleForHeight > puzzleAreaWidth){
                     puzzleScale = puzzleScale * puzzleAreaWidth/(this.state.imgWidth * scaleForHeight);
                 }
 
             }else {
-                const scaleForWidth = maxWidth/this.state.imgWidth;
+                const scaleForWidth = puzzleAreaWidth/this.state.imgWidth;
                 puzzleScale = scaleForWidth;
                 if(this.state.imgHeight * scaleForWidth > puzzleAreaHeight){
                     puzzleScale = puzzleScale * puzzleAreaHeight/(this.state.imgHeight * scaleForWidth);
                 }
             }
+
+
+
+            const leftpos = (puzzleAreaWidth - (imgWidth * puzzleScale))/2;
+            const leftpercent = (leftpos/puzzleAreaWidth) * 100;
+            const toppos = (puzzleAreaHeight - (imgHeight * puzzleScale))/2;
+            const toppercent = (toppos/puzzleAreaHeight) * 100;
+
+            const gridStyle = {
+
+
+                transform:`scale(${puzzleScale})`,
+                left:`${leftpercent}%`,
+                top:`${toppercent}%`
+
+
+            };
+
+            const gamecontainerstyle = {
+
+
+                width:`${gameAreaWidth}px`,
+                height:`${gameAreaHeight}px`
+
+            };
 
 
             const containerstyle = {
@@ -162,28 +185,30 @@ class GameView extends Component {
             };
 
 
-            const uiwidth = (orientation === "landscape") ? viewWidth - puzzleAreaWidth : viewWidth;
-            const uiheight = (orientation === "landscape") ? viewHeight : viewHeight - puzzleAreaHeight;
-            const color = "#000";
+            const uiwidth = (orientation === "landscape") ? gameAreaWidth - puzzleAreaWidth :  puzzleAreaWidth;
+            const uiheight = (orientation === "landscape") ?  puzzleAreaHeight: gameAreaHeight - puzzleAreaHeight;
+
 
             const uistyle = {
                 width:`${uiwidth}px`,
-                height:`${uiheight}px`
+                height:`${uiheight}px`,
             };
 
-            const btnwidth = (orientation === "landscape") ? uiwidth : viewWidth * 0.25;
-            const btnheight = (orientation === "landscape") ? viewHeight * 0.25 : uiheight;
+            const btnwidth = (orientation === "landscape") ? uiwidth : uiwidth * 0.25;
+            const btnheight = (orientation === "landscape") ? uiheight * 0.25 : uiheight;
             const buttonstyle = {
                 width:`${btnwidth}px`,
                 height:`${btnheight}px`
-            }
+            };
+
+
 
 
            return (
                //pass move counter function
                <div className="game-area"  >
-                   <div className="game-container" ref="container">
-                       <Puzzle rowsize={puzzleSize} src={puzzleSrc} width={imgWidth} height={imgHeight} new={newPuzzle} forceMove={nextMove} isSolving={solving} afterUpdate={this.puzzleUpdateComplete} puzzlescale={puzzleScale} puzzleAreaWidth={puzzleAreaWidth} puzzleAreaHeight={puzzleAreaHeight} containerStyle={containerstyle} containerRef={this.refs.container} touchEnabled={this.props.touchEnabled}/>
+                   <div className="game-container" ref="container" style={gamecontainerstyle}>
+                       <Puzzle rowsize={puzzleSize} src={puzzleSrc} width={imgWidth} height={imgHeight} new={newPuzzle} forceMove={nextMove} isSolving={solving} afterUpdate={this.puzzleUpdateComplete} puzzlescale={puzzleScale} gridStyle={gridStyle} containerStyle={containerstyle} containerRef={this.refs.container}/>
                        <GameUi hintClick={this.handleHintBtn} solveClick={this.handleSolveBtn} newClick={this.handleNewBtn} sizeClick={this.handleSizeBtn} otherSize={toggleSize} navStyle={uistyle} buttonStyle={buttonstyle}/>
                    </div>
                </div>

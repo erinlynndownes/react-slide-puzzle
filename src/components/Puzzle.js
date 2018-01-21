@@ -77,7 +77,7 @@ class Puzzle extends Component{
         if(!this.state.gridModel.solution) this.state.gridModel.getSolution();
     };
 
-    handlePieceGrab = (position, mouseX, mouseY, tileX, tileY) => {
+    handlePieceGrab = (position, mouseX, mouseY, tileWidth, tileHeight) => {
         if(this.props.solving) return;
         const g = this.state.gridModel.grabTile(position);
 
@@ -89,6 +89,8 @@ class Puzzle extends Component{
                 draggedPiece:position,
                 droppedPiece:null,
                 dragOffset:{x:0,y:0},
+                dragWidth:tileWidth,
+                dragHeight:tileHeight
             });
 
 
@@ -98,7 +100,7 @@ class Puzzle extends Component{
             window.addEventListener("mousemove" ,this.dragPiece);
             window.addEventListener("mouseup" ,this.handlePieceDrop);
         }
-        //set state dragged/ dropped
+
 
     };
 
@@ -130,48 +132,27 @@ class Puzzle extends Component{
         window.removeEventListener("pressmove" ,this.dragPiece);
         window.removeEventListener("touchend" ,this.handlePieceDrop);
 
-        if(this.props.touchEnabled){
-
-        }else{
-
-        }
-
         const d = this.state.draggedPiece;
         if(d != null){
-            //check current position to move to blank or back
+            if(Math.abs(this.state.dragOffset.x) > this.state.dragWidth/2 || Math.abs(this.state.dragOffset.y) > this.state.dragHeight/2 ){
+                this.inputMove(d);
+            } else{
+                this.setState({
+                    draggedIndex:null,
+                    droppedPiece:d
+                })
+            }
 
-            //if near blank
-            //dropped piece is new position (position of blank before move);
-
-            //else
-            //dropped piece is former dragged
-
-            //this.setState(setDragDropState(null,d));
-            this.inputMove(d);
         }
-        //set state dragged/ dropped
 
     };
 
     completePieceDrop = () =>{
-        /*this.setState({
-            draggedPiece:null,
-            droppedPiece:null
-        });*/
+
         const ref = this;
         const dropTimeout = setTimeout(()=>{
             ref.setState(setDragDropState(null,null));
         },1);
-
-    };
-
-
-
-    handleClick = (position) => {
-
-        if(this.props.solving) return;
-
-        this.inputMove(position);
 
     };
 
@@ -198,7 +179,7 @@ class Puzzle extends Component{
 
     render(){
 
-        const {rowsize, src, width, height, puzzlescale, puzzleAreaWidth, puzzleAreaHeight} = this.props;
+        const {rowsize, src, width, height, puzzlescale, gridStyle, containerStyle} = this.props;
         const {gridModel,tiles, draggedPiece, droppedPiece, dragOffset} = this.state;
 
         //console.dir(this.state);
@@ -214,8 +195,8 @@ class Puzzle extends Component{
 
             //render puzzle grid, get tileset and current positions from model
             return(
-                <div className="grid-container" style={this.props.containerStyle}>
-                  <Grid sequence={tiles} onGrab={this.handlePieceGrab} onDrop={this.handlePieceDrop} onComplete={this.completePieceDrop} src={src} gridsize={rowsize} width={width} height={height} gridscale={puzzlescale} areaWidth={puzzleAreaWidth} areaHeight={puzzleAreaHeight} draggedIndex={draggedPiece} droppedIndex={droppedPiece} dragOffset={dragOffset}/>
+                <div className="grid-container" style={containerStyle}>
+                  <Grid sequence={tiles} onGrab={this.handlePieceGrab} onDrop={this.handlePieceDrop} onComplete={this.completePieceDrop} src={src} gridsize={rowsize} width={width} height={height} gridscale={puzzlescale} gridStyle={gridStyle} draggedIndex={draggedPiece} droppedIndex={droppedPiece} dragOffset={dragOffset}/>
                 </div>
             )
         }

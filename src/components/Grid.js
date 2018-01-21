@@ -6,9 +6,7 @@ class Grid extends Component {
 
     render() {
 
-        //console.dir(this.props);
-        //render each square, pass props (index, current position, click handler)
-        const {sequence, onGrab, onDrop, onComplete, src, width, height, gridsize, gridscale, areaWidth, areaHeight, draggedIndex, droppedIndex, dragOffset} = this.props;
+        const {sequence, onGrab, onDrop, onComplete, src, width, height, gridsize, gridStyle, draggedIndex, droppedIndex, dragOffset} = this.props;
         const tileSize = getTileSize(width,height,gridsize);
 
 
@@ -35,9 +33,7 @@ class Grid extends Component {
                 const blankCoor = getGridCoordinates(blankIndex,gridsize);
 
                 //drag left
-                //console.log("blank index??? " + blankIndex);
-                //console.log("dragging??" + dragOffset.x + ", drag coor x: " + dragCoor.x + ", blank coor x: " + blankCoor.x + " drag index? " + dragIndex);
-                if(blankCoor.x - dragCoor.x === 1 && dragOffset.x > 0){
+                 if(blankCoor.x - dragCoor.x === 1 && dragOffset.x > 0){
                     adjustedOffset.x = dragOffset.x;
                     if(adjustedOffset.x > tileSize.width){
                         adjustedOffset.x = tileSize.width;
@@ -97,25 +93,6 @@ class Grid extends Component {
             )
         });
 
-        const w = areaWidth;
-        const leftpos = (w - (width * gridscale))/2;
-        const leftpercent = (leftpos/w) * 100;
-
-        const h = areaHeight;
-        const toppos = (h - (height * gridscale))/2;
-        const toppercent = (toppos/h) * 100;
-
-
-
-        const gridStyle = {
-
-            transform:`scale(${gridscale})`,
-            left:`${leftpercent}%`,
-            top:`${toppercent}%`
-
-
-        };
-
         return (
 
 
@@ -131,8 +108,6 @@ class Grid extends Component {
             </div>
 
         );
-
-
 
     }
 
@@ -166,7 +141,6 @@ const getPosition = (tileWidth,tileHeight,gridIndex,gridSize) => {
 
 const getGridCoordinates = (index,size) => {
 
-    //console.log("get coords: index.." + index + ', size...' + size);
     const y = Math.floor(index/size);
     const x = index - (y * size);
 

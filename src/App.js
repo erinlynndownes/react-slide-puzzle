@@ -9,6 +9,9 @@ class App extends Component {
     constructor(){
         super();
 
+        const images = importAll(require.context('./images', false, /\.(png|jpe?g|svg)$/));
+        console.log('images? ' + images);
+        console.dir(images);
         this.state = {
             touch:false,
             width:window.innerWidth,
@@ -33,6 +36,8 @@ class App extends Component {
         window.addEventListener("gesturestart", prevent);
         window.addEventListener("touchmove", prevent);
 
+
+
     }
 
     componentWillUnmount() {
@@ -55,6 +60,14 @@ function prevent(e){
     e.preventDefault();
     e.stopPropagation();
 }
+
+function importAll(r) {
+    let images = {};
+    r.keys().map((item, index) => { images[item.replace('./', '')] = r(item); });
+    return images;
+}
+
+
 
 const puzzleImages = [
     testImage

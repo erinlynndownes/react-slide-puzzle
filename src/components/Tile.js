@@ -23,7 +23,7 @@ class Tile extends Component{
 
         const grabX = (e.nativeEvent && e.nativeEvent.touches) ? e.nativeEvent.touches[0].clientX : e.clientX;
         const grabY = (e.nativeEvent && e.nativeEvent.touches) ? e.nativeEvent.touches[0].clientY : e.clientY;
-        this.props.onGrab(this.props.index,grabX,grabY,offset.x,offset.y);
+        this.props.onGrab(this.props.index,grabX,grabY,this.props.width,this.props.height);
     };
 
 
@@ -36,8 +36,19 @@ class Tile extends Component{
 
 
     render(){
-        const {imgSrc, width, height, indexPos, curPos, visible, dragged,dropped,} = this.props;
+        const {imgSrc, width, height, indexPos, curPos, visible, dragged,dropped} = this.props;
 
+
+        let transtime = 1;
+
+        /*if(dropped && this.refs.tile) {
+
+            //time is diff nowx - newx, nowy - newy , divided by max distance (use full width) * 50
+            const nowx = this.refs.tile.offsetLeft;
+            const nowy = this.refs.tile.offsetTop;
+            transtime = (1 * ((Math.abs(curPos.x - nowx) + Math.abs(curPos.y - nowy))/width));
+            console.log('transition time? ' + transtime);
+        }*/
 
 
         const tileStyle = {
@@ -47,7 +58,7 @@ class Tile extends Component{
             backgroundPosition: `${-indexPos.x}px ${-indexPos.y}px`,
             visibility:`${visible}`,
 
-            transition:`left 0.5s ease-out, top 0.5s ease-out`,
+            transition:`left ${transtime}s ease-out, top 0.5s ease-out`,
 
             top:`${curPos.y}px`,
             left:`${curPos.x}px`,
@@ -91,7 +102,6 @@ class Tile extends Component{
 
             </div>
         )
-
 
     }
 }
