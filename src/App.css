@@ -3,16 +3,13 @@
   position: absolute;
   text-align: center;
   font-size:8em;
-  color:#000;
-    outline: 1px solid transparent;
-
   left:0;
   top:0;
 
   background: #FFFFFF;
-    -webkit-box-shadow: inset 0 0 3px 3px white;
-    -moz-box-shadow: inset 0 0 3px 3px white;
-    box-shadow: inset 0 0 3px 3px white;
+    -webkit-box-shadow: inset 0 0 5px 5px whitesmoke;
+    -moz-box-shadow: inset 0 0 5px 5px whitesmoke;
+    box-shadow: inset 0 0 5px 5px whitesmoke;
 
 
 }
@@ -24,18 +21,24 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    opacity:0;
+    display:inline;
+    text-align: center;
+    vertical-align: sub;
+    color: #2f3441;
 
 }
 
 
 .Grid {
 
-  position:relative;
   transform-origin: 0 0;
   display:inline-block;
-  background-color: white;
-    float:bottom;
+  background-color: whitesmoke;
+    border: 2px solid whitesmoke;
+    border-radius: 5px;
+    margin:0 auto;
+    position:relative;
+
 
 }
 
@@ -46,52 +49,140 @@
 
 .grid-container {
 
-  background-color: aliceblue;
+  background-color: white;
   position:relative;
-  float:right;
-    overflow:hidden;
+    display:block;
+    padding:15px;
+    float:left;
 
 }
 
 
 .game-container{
 
-    position:relative;
-  background-color:black;
-  max-width:1024px;
-  margin:0 auto;
-    height:50%;
-    /*overflow:hidden;*/
-
-
+    background-color: #a8ada6;
+    max-width:1024px;
+    margin: auto;
+    overflow:hidden;
 }
 
 .game-area {
-  background-color: whitesmoke;
-  height:100vh;
-  width:100vw;
+
+    background-color: whitesmoke;
+
 
 }
 
 .nav {
 
-  background-color: #2f3441;
-  position:relative;
+    background-color: #2f3441;
+    position:relative;
     float:left;
+    display:inline-block;
+
 
 }
 
 .nav button {
 
-    position:relative;
-    text-overflow:ellipsis;
-  background:transparent;
-  font-size:3vw;
-  text-align:center;
-  outline:none;
-    border:none;
+    background:transparent;
+    font-size:18px;
+    text-align:center;
+    margin:auto;
+    vertical-align: top;
     color: #19a4ad;
+    outline:whitesmoke;
 
 
+
+}
+
+.sidebar {
+    text-align:left;
+    position:relative;
+    pointer-events: none;
+    display:block;
+    height:100%;
+
+
+
+}
+
+.solveInfo {
+
+
+    padding:15px 20px;
+    text-align:center;
+    float:left;
+    display:block;
+
+
+}
+
+
+.counter {
+    display:inline-block;
+    width:130px;
+    margin:auto;
+    text-align:center;
+    padding-top:20px;
+    color: #2f3441;
+
+
+
+}
+
+.moveNumber {
+    margin:0;
+    font-size:40px;
+
+}
+
+
+.gears {
+    color:white;
+
+    float:left;
+    margin:auto;
+}
+
+.gears img {
+    margin:-5px;
+
+}
+
+.gearsmoving img {
+    margin:-5px;
+    animation: rotate 2s linear infinite;
+
+}
+
+
+@keyframes rotate {
+    100% {
+        transform:rotate(360deg);
+    }
+}
+
+.solveInfo p {
+
+    margin-top:2px;
+}
+
+figure {
+    position:absolute;
+    bottom:0;
+    right:0;
+    padding:0;
+
+}
+
+figcaption {
+    font-size:12px;
+}
+
+.placeHolder {
+
+    opacity:0;
 }
 

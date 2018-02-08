@@ -1,6 +1,8 @@
 import {shuffleArray} from "./utils";
-import Solver from "./Solver";
 import {getMisplaced} from './Solver';
+import worker_script from "./WorkerSolver";
+
+//let MyWorker = require("worker!./WorkerSolver.js");
 
 class GridModel {
 
@@ -27,7 +29,6 @@ class GridModel {
     moveTile = (position) => {
         //check if blank is next to position, swap tile (number) from position (index) and blank
         const moveToPosition = checkValidMove(position,this.tiles);
-        console.log("move to?" + moveToPosition);
         if(moveToPosition != null){
             const temp = this.tiles[moveToPosition];
             this.tiles[moveToPosition] = this.tiles[position];
@@ -39,7 +40,6 @@ class GridModel {
 
     getTiles = () => {
 
-        console.log("getting tiles:" + this.tiles);
         return this.tiles.slice(0);
     };
 
@@ -106,22 +106,33 @@ class GridModel {
 
 
 
-    getSolution = () => {
+    getSolution = (cb) => {
 
         console.log("get solution");
+        this.worker = new Worker(worker_script);
+        let sequence = this.getTiles();
+        let self = this;
+        this.worker.onmessage = (e) => {
+
+            console.log("message back? " + e.data['solution']);
+            self.solution = e.data['solution'];
+            cb(self.solution);
+
+        };
+        this.worker.postMessage({'cmd':'solve', 'sequence':sequence});
         //start astar
-        let solver = new Solver();
+        //let solver = new Solver();
         //return array of moves
         //this.solution = solver.solvePuzzleAStar(this.getTiles());
-        if(this.tiles.length === 9){
+        /* if(this.tiles.length === 9){
             this.solution = solver.solvePuzzleFringe(this.getTiles());
         }else{
             this.solution = solver.solvePuzzlePattern(this.getTiles());
-        }
+        }*/
 
 
-        console.log("and the solution is..." + this.solution);
-        console.log("number of moves" + this.solution.length);
+        //console.log("and the solution is..." + this.solution);
+        //console.log("number of moves" + this.solution.length);
 
     }
 

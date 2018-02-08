@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Puzzle from './Puzzle';
 import GameUi from './GameUi';
 import {getRandom} from "../libs/utils";
+import Sidebar from './Sidebar';
 
 class GameView extends Component {
 
@@ -15,7 +16,9 @@ class GameView extends Component {
             puzzleSrc:null,
             puzzleWidth:null,
             puzzleHeight:null,
-            puzzleSize:4
+            puzzleSize:4,
+            puzzleType:'numbers',
+            numMoves: 0
         };
 
         this.solving = false;
@@ -48,28 +51,41 @@ class GameView extends Component {
     };
 
     setNewPuzzle = () => {
-        let nextSrc = this.props.puzzleImages[getRandom(0,this.props.puzzleImages.length - 1)];
+        let nextSrc = this.props.puzzleImages[this.props.puzzleImages['allKeys'][getRandom(0,this.props.puzzleImages['allKeys'].length - 1)]];
 
         this.setState((prevState,props) => ({
             puzzleSrc:nextSrc,
             newPuzzle:true,
             width:null,
             height:null,
+            imgWidth:768,
+            imgHeight:768,
+            numMoves:0
         }))
-    };
-
-    handleHintBtn = () => {
-        if(this.state.solving) return;
-        this.setState((prevState,props) => ({
-            nextMove:true
-        }))
-
     };
 
     handleSolveBtn = () => {
         //solving
         this.setState((prevState,props) => ({
             solving:true
+        }))
+
+    };
+
+    handleSolveComplete = () => {
+        console.log('complete solve');
+        this.setState((prevState,props) => ({
+            solving:false
+        }))
+
+    }
+
+    handleImageBtn = () => {
+
+        if(this.state.solving) return;
+        let newType = (this.state.puzzleType === 'image') ? 'numbers' : 'image';
+        this.setState((prevState,props) => ({
+            puzzleType:newType,
         }))
 
     };
@@ -103,7 +119,9 @@ class GameView extends Component {
 
     render() {
         const toggleSize = (this.state.puzzleSize === 3) ? 4 : 3;
-        const {puzzleSize, puzzleSrc, newPuzzle, nextMove, solving, imgWidth, imgHeight} = this.state;
+        const toggleImage = (this.state.puzzleType === "image") ? "Numbers" : "Image";
+        const {puzzleSize, puzzleSrc, puzzleType, newPuzzle, nextMove, solving, imgWidth, imgHeight} = this.state;
+
         let {viewWidth, viewHeight } = this.props;
         if(!puzzleSrc){
             return (
@@ -117,7 +135,7 @@ class GameView extends Component {
         }else if(!imgWidth){//if current image is not yet loaded?
            //set width on image load
            return (
-               <img
+               <img className="placeholder" alt="guideimage"
                    src={puzzleSrc}
                    ref={this.setImageRef}
                    onLoad={this.imageReady}
@@ -128,66 +146,66 @@ class GameView extends Component {
        }else{
             //fit to view smaller side
             const orientation = (Math.min(viewWidth, viewHeight) === viewHeight) ? "landscape" : "portrait";
-            if(viewWidth > 1024) viewWidth = 1024;
             let puzzleScale = 1;
             let gameAreaWidth = viewWidth;
             let gameAreaHeight = (orientation === "landscape" && this.state.imgHeight < viewHeight)  ? this.state.imgHeight : viewHeight;
-            let puzzleAreaWidth = (orientation === "landscape") ? gameAreaWidth - (gameAreaWidth * 0.15) :  gameAreaWidth;
-            let puzzleAreaHeight = (orientation === "landscape") ? gameAreaHeight : gameAreaHeight - (gameAreaHeight * 0.2);
+            if(gameAreaWidth > 1024) {
 
-            if(orientation === "landscape"){
-
-                const scaleForHeight = puzzleAreaHeight/this.state.imgHeight;
-                puzzleScale = scaleForHeight;
-                if(this.state.imgWidth * scaleForHeight > puzzleAreaWidth){
-                    puzzleScale = puzzleScale * puzzleAreaWidth/(this.state.imgWidth * scaleForHeight);
-                }
-
-            }else {
-                const scaleForWidth = puzzleAreaWidth/this.state.imgWidth;
-                puzzleScale = scaleForWidth;
-                if(this.state.imgHeight * scaleForWidth > puzzleAreaHeight){
-                    puzzleScale = puzzleScale * puzzleAreaHeight/(this.state.imgHeight * scaleForWidth);
-                }
+                gameAreaWidth = 700;
+                gameAreaHeight = 600;
             }
 
 
+            let puzzleAreaWidth = gameAreaWidth;
+            let puzzleAreaHeight = gameAreaHeight;
 
-            const leftpos = (puzzleAreaWidth - (imgWidth * puzzleScale))/2;
+            if(orientation === "landscape"){
+
+                const scaleForHeight = gameAreaHeight/this.state.imgHeight;
+                puzzleScale = scaleForHeight;
+                if((this.state.imgWidth) * scaleForHeight > gameAreaWidth - 310){
+                    puzzleScale = puzzleScale * (gameAreaWidth - 310)/(this.state.imgWidth * scaleForHeight);
+                }
+
+                puzzleAreaWidth = (this.state.imgWidth * puzzleScale);
+                gameAreaWidth = Math.min(puzzleAreaWidth + 330, viewWidth);
+            }else {
+
+                gameAreaHeight = viewHeight;
+                //puzzleAreaHeight = gameAreaHeight;
+                const scaleForWidth = (puzzleAreaWidth)/(this.state.imgWidth + 30);
+                puzzleScale = scaleForWidth;
+                if(this.state.imgHeight * scaleForWidth > gameAreaHeight - 260){
+                    puzzleScale = puzzleScale * (gameAreaHeight - 260)/(this.state.imgHeight * scaleForWidth);
+                }
+
+                puzzleAreaHeight = (this.state.imgHeight * puzzleScale);
+                gameAreaHeight = Math.min(puzzleAreaHeight + 330, viewHeight);
+            }
+
+            const leftpos = (orientation === "landscape") ? (puzzleAreaWidth - (imgWidth * puzzleScale))/2: (puzzleAreaWidth - (imgWidth * puzzleScale))/2 - 15;//2 for border width
             const leftpercent = (leftpos/puzzleAreaWidth) * 100;
-            const toppos = (puzzleAreaHeight - (imgHeight * puzzleScale))/2;
+            const toppos = (orientation === "landscape") ? (puzzleAreaHeight - (imgHeight * puzzleScale))/2 - 15: (puzzleAreaHeight - (imgHeight * puzzleScale))/2;
             const toppercent = (toppos/puzzleAreaHeight) * 100;
 
             const gridStyle = {
-
-
                 transform:`scale(${puzzleScale})`,
                 left:`${leftpercent}%`,
                 top:`${toppercent}%`
-
-
             };
 
             const gamecontainerstyle = {
-
-
                 width:`${gameAreaWidth}px`,
                 height:`${gameAreaHeight}px`
-
             };
-
 
             const containerstyle = {
-
                 width:`${puzzleAreaWidth}px`,
                 height:`${puzzleAreaHeight}px`
-
             };
 
-
-            const uiwidth = (orientation === "landscape") ? gameAreaWidth - puzzleAreaWidth :  puzzleAreaWidth;
-            const uiheight = (orientation === "landscape") ?  puzzleAreaHeight: gameAreaHeight - puzzleAreaHeight;
-
+            const uiwidth = (orientation === "landscape") ? 100:  puzzleAreaWidth;
+            const uiheight = (orientation === "landscape") ?  puzzleAreaHeight: 100;
 
             const uistyle = {
                 width:`${uiwidth}px`,
@@ -198,31 +216,29 @@ class GameView extends Component {
             const btnheight = (orientation === "landscape") ? uiheight * 0.25 : uiheight;
             const buttonstyle = {
                 width:`${btnwidth}px`,
-                height:`${btnheight}px`
+                height:`${btnheight}px`,
+                textAlign:`center`
             };
-
-
-
 
            return (
                //pass move counter function
                <div className="game-area"  >
                    <div className="game-container" ref="container" style={gamecontainerstyle}>
-                       <Puzzle rowsize={puzzleSize} src={puzzleSrc} width={imgWidth} height={imgHeight} new={newPuzzle} forceMove={nextMove} isSolving={solving} afterUpdate={this.puzzleUpdateComplete} puzzlescale={puzzleScale} gridStyle={gridStyle} containerStyle={containerstyle} containerRef={this.refs.container}/>
-                       <GameUi hintClick={this.handleHintBtn} solveClick={this.handleSolveBtn} newClick={this.handleNewBtn} sizeClick={this.handleSizeBtn} otherSize={toggleSize} navStyle={uistyle} buttonStyle={buttonstyle}/>
+                       <GameUi imageClick={this.handleImageBtn} solveClick={this.handleSolveBtn} newClick={this.handleNewBtn} sizeClick={this.handleSizeBtn} otherSize={toggleSize} otherType={toggleImage} navStyle={uistyle} buttonStyle={buttonstyle}/>
+                       <Puzzle displayType={puzzleType} rowsize={puzzleSize} src={puzzleSrc} width={imgWidth} height={imgHeight} new={newPuzzle} forceMove={nextMove} isSolving={solving} afterUpdate={this.puzzleUpdateComplete} puzzleScale={puzzleScale} gridStyle={gridStyle} containerStyle={containerstyle} containerRef={this.refs.container} solveComplete={this.handleSolveComplete}/>
+                       <Sidebar solving={this.state.solving}/>
                    </div>
                </div>
 
            );
        }
-
     }
-
 }
 
 
 GameView.propTypes = {
-    puzzleImages:PropTypes.array.isRequired
+
+
 };
 
 export default GameView;

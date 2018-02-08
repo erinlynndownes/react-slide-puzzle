@@ -6,7 +6,7 @@ class Grid extends Component {
 
     render() {
 
-        const {sequence, onGrab, onDrop, onComplete, src, width, height, gridsize, gridStyle, draggedIndex, droppedIndex, dragOffset} = this.props;
+        const {sequence, onGrab, onDrop, onComplete, src, width, height, gridsize, gridStyle, draggedIndex, droppedIndex, dragOffset, displayType} = this.props;
         const tileSize = getTileSize(width,height,gridsize);
 
 
@@ -17,7 +17,9 @@ class Grid extends Component {
             const dropped = (droppedIndex === i);
 
             const imgPos = getPosition(tileSize.width, tileSize.height, item - 1,gridsize);
-            let tilePos = getPosition(tileSize.width,tileSize.height, i,gridsize);
+            let tilePos = getPosition(tileSize.width,tileSize.height, i ,gridsize);
+
+            const matched = (item - 1 === i);
 
             //constrain drag to blank position space
 
@@ -46,7 +48,6 @@ class Grid extends Component {
                     if(adjustedOffset.x < -tileSize.width){
                         adjustedOffset.x = -tileSize.width;
                     }
-
                 }
 
                 //drag down
@@ -55,7 +56,6 @@ class Grid extends Component {
                     if(adjustedOffset.y > tileSize.height){
                         adjustedOffset.y = tileSize.height;
                     }
-
                 }
 
                 //drag up
@@ -64,7 +64,6 @@ class Grid extends Component {
                     if(adjustedOffset.y < -tileSize.height){
                         adjustedOffset.y = -tileSize.height;
                     }
-
                 }
             }
 
@@ -76,11 +75,12 @@ class Grid extends Component {
 
             //if dropped move to blank position (or dragged position?) before transition
             if(dropped){
-                //console.log("handle dragged" + draggedIndex + "handle dropped: " + droppedIndex + "dropped piece: " + item + "cur index: " + i);
-                tilePos = getPosition(tileSize.width,tileSize.height, draggedIndex, gridsize);
-                console.log("dropping at drag index?? " + draggedIndex + " offset x" + adjustedOffset.x);
+                let d = draggedIndex;
+                if(d === null) d = arr.indexOf(arr.length);
+                tilePos = getPosition(tileSize.width,tileSize.height, d, gridsize);
                 tilePos.x += adjustedOffset.x;
                 tilePos.y += adjustedOffset.y;
+                console.log("adjusted x : " + d);
 
             }
 
@@ -88,17 +88,15 @@ class Grid extends Component {
 
             return (
 
-                <Tile key={i} imgSrc={src} width={tileSize.width} height={tileSize.height} index={i} id={item} onGrab={onGrab} onDrop={onDrop} curPos={tilePos} indexPos={imgPos} visible={visible} moveCompleteHandler={onComplete} dragged={dragged} dropped={dropped}/>
+                <Tile key={i} imgSrc={src} width={tileSize.width} height={tileSize.height} index={i} id={item} onGrab={onGrab} onDrop={onDrop} curPos={tilePos} indexPos={imgPos} visible={visible} moveCompleteHandler={onComplete} dragged={dragged} dropped={dropped} display={displayType} matched={matched}/>
 
             )
         });
 
         return (
 
-
-
             <div className="Grid" style={gridStyle}>
-                <img className="bg-image"
+                <img alt="background" className="bg-image"
                      src={src}
                 />
                 <div>
@@ -129,11 +127,8 @@ const getTileSize = (width,height,gridsize) => {
 const getPosition = (tileWidth,tileHeight,gridIndex,gridSize) => {
 
     const imgCoor = getGridCoordinates(gridIndex,gridSize);
-
     const x = tileWidth * imgCoor.x;
     const y = tileHeight * imgCoor.y;
-
-    //console.log("pos x: " + x);
 
     return {x:x,y:y};
 

@@ -2,17 +2,18 @@ import React, { Component } from 'react';
 import './App.css';
 import GameView from './components/GameView';
 
-import testImage from './images/huxley.jpg';
+//import testImage from './images/huxley.jpg';
 
 class App extends Component {
 
     constructor(){
         super();
 
-        const images = importAll(require.context('./images', false, /\.(png|jpe?g|svg)$/));
+        const images = importAll(require.context('./images/puzzles', false, /\.(png|jpe?g|svg)$/));
         console.log('images? ' + images);
         console.dir(images);
         this.state = {
+            images: images,
             touch:false,
             width:window.innerWidth,
             height:window.innerHeight
@@ -36,8 +37,6 @@ class App extends Component {
         window.addEventListener("gesturestart", prevent);
         window.addEventListener("touchmove", prevent);
 
-
-
     }
 
     componentWillUnmount() {
@@ -46,32 +45,30 @@ class App extends Component {
         window.removeEventListener("resize", this.sizeGame.bind(this));
     }
 
-
-
     render() {
-        const {width, height} = this.state;
+        const {width, height, images} = this.state;
         return (
-            <GameView puzzleImages={puzzleImages} viewWidth={width} viewHeight={height} touchEnabled={this.state.touch}/>
+            <GameView puzzleImages={images} viewWidth={width} viewHeight={height} touchEnabled={this.state.touch}/>
         );
   }
 }
 
-function prevent(e){
+const prevent = (e) => {
     e.preventDefault();
     e.stopPropagation();
-}
+};
 
-function importAll(r) {
+const importAll = (r) => {
     let images = {};
-    r.keys().map((item, index) => { images[item.replace('./', '')] = r(item); });
+    images['allKeys'] = [];
+    r.keys().map((item, index) => { images[item.replace('./', '')] = r(item);
+                                    images['allKeys'].push(item.replace('./', '')
+                                    );
+
+                                    return true;
+    });
     return images;
-}
-
-
-
-const puzzleImages = [
-    testImage
-];
+};
 
 
 
