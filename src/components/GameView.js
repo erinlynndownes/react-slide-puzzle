@@ -72,7 +72,6 @@ class GameView extends Component {
     };
 
     handleSolveComplete = () => {
-        console.log('complete solve');
         this.setState((prevState,props) => ({
             solving:false
         }))

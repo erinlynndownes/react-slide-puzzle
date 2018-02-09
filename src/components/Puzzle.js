@@ -78,8 +78,6 @@ class Puzzle extends Component{
     };
 
     solvePuzzle = () => {
-        //delay...make next move
-        console.log("solve puzzle");
         if(!this.state.gridModel.solution) this.state.gridModel.getSolution(this.handleSolution);
 
 

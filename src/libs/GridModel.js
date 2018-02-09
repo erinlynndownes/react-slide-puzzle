@@ -1,9 +1,7 @@
 import {shuffleArray} from "./utils";
 import {getMisplaced} from './Solver';
-import worker_script from "./Worker";
-
-//let MyWorker = require("worker!./WorkerSolver.js");
-
+//import Worker from "worker-loader!./Solver.worker";// eslint-disable-line import/no-webpack-loader-syntax
+import Worker from './Solver.worker.js';
 class GridModel {
 
     constructor(gridsize){
@@ -108,20 +106,15 @@ class GridModel {
 
     getSolution = (cb) => {
 
-        console.log("get solution");
-        this.worker = new Worker(worker_script);
-        console.log("worker? " + this.worker);
-        console.dir(this.worker);
+        let worker = new Worker();
         let sequence = this.getTiles();
         let self = this;
-        this.worker.onmessage = (e) => {
 
-            console.log("message back? " + e.data['solution']);
+        worker.addEventListener("message", (e) => {
             self.solution = e.data['solution'];
             cb(self.solution);
-
-        };
-        this.worker.postMessage({'cmd':'solve', 'sequence':sequence});
+        });
+        worker.postMessage({'cmd':'solve', 'sequence':sequence});
 
     }
 
