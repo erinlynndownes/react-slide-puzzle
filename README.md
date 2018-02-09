@@ -6,7 +6,7 @@ While most configurations of the 15 puzzle are solved within a few seconds, the 
 
 ##Demo
 
-[http://erinlynnlouise.net/games/react-puzzle/](http://erinlynnlouise.net/games/react-puzzle/)
+[http://www.erinlynnlouise.net/games/react-puzzle/](http://www.erinlynnlouise.net/games/react-puzzle/)
 
 ##Getting started
 
@@ -18,7 +18,7 @@ While most configurations of the 15 puzzle are solved within a few seconds, the 
     npm start
     ```
    ###build
-    npm build
+    npm run build
 
 ##Built with
 
