@@ -79,7 +79,6 @@ class Grid extends Component {
                 tilePos = getPosition(tileSize.width,tileSize.height, d, gridsize);
                 tilePos.x += adjustedOffset.x;
                 tilePos.y += adjustedOffset.y;
-                console.log("adjusted x : " + d);
 
             }
 

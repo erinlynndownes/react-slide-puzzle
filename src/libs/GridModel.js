@@ -1,6 +1,6 @@
 import {shuffleArray} from "./utils";
 import {getMisplaced} from './Solver';
-import worker_script from "./WorkerSolver";
+import worker_script from "./Worker";
 
 //let MyWorker = require("worker!./WorkerSolver.js");
 
@@ -110,6 +110,8 @@ class GridModel {
 
         console.log("get solution");
         this.worker = new Worker(worker_script);
+        console.log("worker? " + this.worker);
+        console.dir(this.worker);
         let sequence = this.getTiles();
         let self = this;
         this.worker.onmessage = (e) => {
@@ -120,19 +122,6 @@ class GridModel {
 
         };
         this.worker.postMessage({'cmd':'solve', 'sequence':sequence});
-        //start astar
-        //let solver = new Solver();
-        //return array of moves
-        //this.solution = solver.solvePuzzleAStar(this.getTiles());
-        /* if(this.tiles.length === 9){
-            this.solution = solver.solvePuzzleFringe(this.getTiles());
-        }else{
-            this.solution = solver.solvePuzzlePattern(this.getTiles());
-        }*/
-
-
-        //console.log("and the solution is..." + this.solution);
-        //console.log("number of moves" + this.solution.length);
 
     }
 

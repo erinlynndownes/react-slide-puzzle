@@ -2,7 +2,7 @@
   "name": "slide-puzzle",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://erinlynndownes.net/games/react-puzzle/",
+  "homepage": "http://localhost:8888/react-home/slide-puzzle/build",
   "dependencies": {
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
