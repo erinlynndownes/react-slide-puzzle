@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import Grid from './Grid';
 import GridModel from "../libs/GridModel";
 
-//model
-//grid
 
 class Puzzle extends Component{
     constructor(props){
@@ -63,10 +60,10 @@ class Puzzle extends Component{
 
         if(!this.moves || this.moves.length <= 0){
             this.props.solveComplete();
+            this.state.gridModel.solution = null;
 
         }else{
             let nextMove = this.moves.shift();
-            console.log("move is?? " + nextMove);
             this.inputMove(nextMove);
             //this.props.afterUpdate();
             const ref = this;
@@ -91,7 +88,6 @@ class Puzzle extends Component{
 
     handleSolution = (solution) => {
 
-        console.log("got the solution in the puzzle!.." + solution);
         this.moves = solution;
 
         const ref = this;
@@ -179,7 +175,6 @@ class Puzzle extends Component{
         //input move to grid model
         let p = this.state.gridModel.moveTile(position);
 
-        console.log("input move: " + p);
         //if valid move get new tile state
         if(p !== null){
             //set state with new tiles or complete
@@ -244,8 +239,3 @@ const setDragDropState = (dragged,dropped) => {
 };
 
 export default Puzzle;
-
-Puzzle.propTypes = {
-    rowsize:PropTypes.oneOf([3,4]).isRequired,
-    src:PropTypes.string.isRequired
-};

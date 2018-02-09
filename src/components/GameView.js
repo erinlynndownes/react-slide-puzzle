@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import Puzzle from './Puzzle';
 import GameUi from './GameUi';
 import {getRandom} from "../libs/utils";
@@ -220,25 +219,45 @@ class GameView extends Component {
                 textAlign:`center`
             };
 
-           return (
-               //pass move counter function
-               <div className="game-area"  >
-                   <div className="game-container" ref="container" style={gamecontainerstyle}>
-                       <GameUi imageClick={this.handleImageBtn} solveClick={this.handleSolveBtn} newClick={this.handleNewBtn} sizeClick={this.handleSizeBtn} otherSize={toggleSize} otherType={toggleImage} navStyle={uistyle} buttonStyle={buttonstyle}/>
-                       <Puzzle displayType={puzzleType} rowsize={puzzleSize} src={puzzleSrc} width={imgWidth} height={imgHeight} new={newPuzzle} forceMove={nextMove} isSolving={solving} afterUpdate={this.puzzleUpdateComplete} puzzleScale={puzzleScale} gridStyle={gridStyle} containerStyle={containerstyle} containerRef={this.refs.container} solveComplete={this.handleSolveComplete}/>
-                       <Sidebar solving={this.state.solving}/>
-                   </div>
-               </div>
+            if(viewWidth > 1024){
 
-           );
+                return (
+                    //pass move counter function
+                    <div className="wholepage">
+                        <h1 className="pagetitle"> React 15-puzzle </h1>
+                        <div className="game-area"  >
+                            <div className="game-container" ref="container" style={gamecontainerstyle}>
+                                <GameUi imageClick={this.handleImageBtn} solveClick={this.handleSolveBtn} newClick={this.handleNewBtn} sizeClick={this.handleSizeBtn} otherSize={toggleSize} otherType={toggleImage} navStyle={uistyle} buttonStyle={buttonstyle}/>
+                                <Puzzle displayType={puzzleType} rowsize={puzzleSize} src={puzzleSrc} width={imgWidth} height={imgHeight} new={newPuzzle} forceMove={nextMove} isSolving={solving} afterUpdate={this.puzzleUpdateComplete} puzzleScale={puzzleScale} gridStyle={gridStyle} containerStyle={containerstyle} containerRef={this.refs.container} solveComplete={this.handleSolveComplete}/>
+                                <Sidebar solving={this.state.solving}/>
+                            </div>
+                        </div>
+                        <div className="writeup">
+                            <p className="pagedescription">A classic 8 or 15 puzzle that I built with React that has interactive sliding tiles. The ai solver uses the <a href="https://en.wikipedia.org/wiki/Fringe_search">fringe search </a>algorithm and manhattan distance heuristic, which is sufficient for the 8 piece puzzle. For the 15 piece a non-optimal but short solution is found by breaking up the problem and stringing together those solutions, an idea based on <a href="https://pdfs.semanticscholar.org/21be/9f73ab7afb7991b8cfbdaf96e4124a0bec89.pdf">this</a> paper by Ian Parberry.</p>
+                            <p className="pagedescription">While most configurations of the 15 puzzle are solved within a few seconds, the hardest can take up from 30 to 50 seconds. For this reason the solution is carried out in a web worker so the browser doesn't lock up. This puzzle works great on mobile devices due to the responsive design of the layout and memory efficient ai.</p>
+
+                        </div>
+                    </div>
+                );
+            }else{
+                return (
+                    //pass move counter function
+                    <div className="game-area"  >
+                        <div className="game-container" ref="container" style={gamecontainerstyle}>
+                            <GameUi imageClick={this.handleImageBtn} solveClick={this.handleSolveBtn} newClick={this.handleNewBtn} sizeClick={this.handleSizeBtn} otherSize={toggleSize} otherType={toggleImage} navStyle={uistyle} buttonStyle={buttonstyle}/>
+                            <Puzzle displayType={puzzleType} rowsize={puzzleSize} src={puzzleSrc} width={imgWidth} height={imgHeight} new={newPuzzle} forceMove={nextMove} isSolving={solving} afterUpdate={this.puzzleUpdateComplete} puzzleScale={puzzleScale} gridStyle={gridStyle} containerStyle={containerstyle} containerRef={this.refs.container} solveComplete={this.handleSolveComplete}/>
+                            <Sidebar solving={this.state.solving}/>
+                        </div>
+                    </div>
+
+                );
+
+            }
+
+
        }
     }
 }
 
-
-GameView.propTypes = {
-
-
-};
 
 export default GameView;

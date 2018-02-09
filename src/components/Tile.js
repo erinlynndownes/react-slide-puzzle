@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
 class Tile extends Component{
 
@@ -28,7 +27,7 @@ class Tile extends Component{
 
 
     render(){
-        const {imgSrc, width, height, indexPos, curPos, visible, dragged,dropped, display, matched} = this.props;
+        const {imgSrc, width, height, indexPos, curPos, visible, dragged, dropped, display, matched} = this.props;
 
         const tileStyle = {
             width:`${width}px`,
@@ -74,14 +73,5 @@ class Tile extends Component{
 
     }
 }
-
-Tile.propTypes = {
-
-    index:PropTypes.number.isRequired,
-    curPos:PropTypes.object.isRequired,
-    imgSrc:PropTypes.string
-
-};
-
 
 export default Tile;

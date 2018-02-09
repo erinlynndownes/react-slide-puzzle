@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import SolvingAnim from './SolvingAnim';
-import MovesCounter from './MovesCounter';
 import gitmark from '../images/GitHub-Mark-64px.png';
 
 class Sidebar extends Component{
-
-
 
     render(){
 
@@ -15,15 +11,14 @@ class Sidebar extends Component{
         return (
             <div className="sidebar">
                 <SolvingAnim solving={this.props.solving}/>
-
-                <a href={giturl} target="_blank">
-                <figure>
-
-                    <img src={gitmark}/>
-                    <figcaption>See on github.</figcaption>
+                <figure >
+                    <a href={giturl}  className="gitlink" target="_blank">
+                        <img alt='github logo' src={gitmark}/>
+                        <figcaption>See on github</figcaption>
+                    </a>
 
                 </figure>
-                </a>
+
             </div>
         )
     }

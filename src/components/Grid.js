@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import Tile from "./Tile";
 
 class Grid extends Component {
@@ -110,12 +109,6 @@ class Grid extends Component {
     }
 
 }
-
-Grid.propTypes = {
-    sequence:PropTypes.array.isRequired,
-    gridsize:PropTypes.oneOf([3,4]).isRequired,
-    src:PropTypes.string.isRequired
-};
 
 export default Grid;
 

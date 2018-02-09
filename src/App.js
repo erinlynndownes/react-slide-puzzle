@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import './App.css';
 import GameView from './components/GameView';
 
-//import testImage from './images/huxley.jpg';
-
 class App extends Component {
 
     constructor(){

@@ -119,26 +119,6 @@
 
 }
 
-
-.counter {
-    display:inline-block;
-    width:130px;
-    margin:auto;
-    text-align:center;
-    padding-top:20px;
-    color: #2f3441;
-
-
-
-}
-
-.moveNumber {
-    margin:0;
-    font-size:40px;
-
-}
-
-
 .gears {
     color:white;
 
@@ -170,6 +150,7 @@
 }
 
 figure {
+    pointer-events: all;
     position:absolute;
     bottom:0;
     right:0;
@@ -181,8 +162,39 @@ figcaption {
     font-size:12px;
 }
 
+figure a {
+    outline:none;
+    text-decoration:none;
+    padding:0;
+    margin:0;
+    color:black;
+}
+
+.wholepage {
+
+    text-align: center;
+}
 .placeHolder {
 
     opacity:0;
+}
+
+.pagetitle {
+
+}
+
+.writeup {
+    padding-top:30px;
+    max-width:720px;
+    margin:auto;
+    text-align: left;
+}
+
+.pagedescription {
+
+    margin:auto;
+    font-size:15px;
+    padding-bottom:30px;
+
 }
 

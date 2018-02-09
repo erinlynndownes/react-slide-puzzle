@@ -5,15 +5,12 @@ const  WorkerSolver = () => {
 
     let onmessage = (e) => { // without self, onmessage is not defined
         if(e.data['cmd'] === 'solve'){
-            let s = e.data['sequence']
-            console.log("what's the sequence: " + e.data['sequence']);
+            let s = e.data['sequence'];
             let moves = (s.length > 10) ? solvePuzzlePattern(s) : solvePuzzleFringe(s);
             postMessage({'cmd':'solved','solution':moves});
-
         }
 
     };
-
 
 
     const solvePuzzlePattern = (startSequence) => {
@@ -298,7 +295,6 @@ const  WorkerSolver = () => {
             moves.push(b);
         }
 
-        //moves = shuffleArray(moves);
         return moves;
     };
 
