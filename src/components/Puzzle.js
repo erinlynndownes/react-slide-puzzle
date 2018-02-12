@@ -122,13 +122,13 @@ class Puzzle extends Component{
     dragPiece = (e) => {
 
 
-        let offsetX = (e.pageX - this.dragStart.x) / this.props.puzzleScale;
-        let offsetY = (e.pageY - this.dragStart.y) / this.props.puzzleScale;
+        let offsetX = ((e.pageX - window.scrollX) - this.dragStart.x) / this.props.puzzleScale;
+        let offsetY = ((e.pageY - window.scrollY) - this.dragStart.y) / this.props.puzzleScale;
 
         if(e.touches){
             let touch = e.touches[0];
-            offsetX = (touch.pageX - this.dragStart.x);
-            offsetY = (touch.pageY - this.dragStart.y);
+            offsetX = ((touch.pageX - window.scrollX) - this.dragStart.x);
+            offsetY = ((touch.pageY - window.scrollY) - this.dragStart.y);
         }
 
         this.setState({

@@ -13,6 +13,9 @@ class Tile extends Component{
             el = el.offsetParent;
         }
 
+        //offset.x -= window.scrollX;
+        //offset.y += window.scrollY;
+
         const grabX = (e.nativeEvent && e.nativeEvent.touches) ? e.nativeEvent.touches[0].clientX : e.clientX;
         const grabY = (e.nativeEvent && e.nativeEvent.touches) ? e.nativeEvent.touches[0].clientY : e.clientY;
         this.props.onGrab(this.props.index,grabX,grabY,this.props.width,this.props.height);
