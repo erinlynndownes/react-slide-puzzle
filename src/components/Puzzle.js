@@ -60,7 +60,8 @@ class Puzzle extends Component{
 
         if(!this.moves || this.moves.length <= 0){
             this.props.solveComplete();
-            this.state.gridModel.solution = null;
+            let g = this.state.gridModel;
+            g.solution = null;
 
         }else{
             let nextMove = this.moves.shift();

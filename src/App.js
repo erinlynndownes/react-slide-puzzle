@@ -8,8 +8,6 @@ class App extends Component {
         super();
 
         const images = importAll(require.context('./images/puzzles', false, /\.(png|jpe?g|svg)$/));
-        console.log('images? ' + images);
-        console.dir(images);
         this.state = {
             images: images,
             touch:false,
