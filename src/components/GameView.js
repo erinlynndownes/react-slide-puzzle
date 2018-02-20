@@ -13,14 +13,11 @@ class GameView extends Component {
 
         this.state = {
             puzzleSrc:null,
-            puzzleWidth:null,
-            puzzleHeight:null,
             puzzleSize:4,
             puzzleType:'numbers',
             numMoves: 0
         };
 
-        this.solving = false;
         this.imageRef = null;
     }
 
@@ -116,7 +113,7 @@ class GameView extends Component {
 
 
     render() {
-        const toggleSize = (this.state.puzzleSize === 3) ? 4 : 3;
+        const toggleSize = (this.state.puzzleSize === 3) ? 15 : 8;
         const toggleImage = (this.state.puzzleType === "image") ? "Numbers" : "Image";
         const {puzzleSize, puzzleSrc, puzzleType, newPuzzle, nextMove, solving, imgWidth, imgHeight} = this.state;
 
