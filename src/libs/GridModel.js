@@ -1,20 +1,12 @@
-import {shuffleArray} from "./utils";
-import {getMisplaced} from './Solver';
-//import Worker from "worker-loader!./Solver.worker";// eslint-disable-line import/no-webpack-loader-syntax
+import { shuffleArray } from "./utils";
+import { getMisplaced } from './Solver';
 import Worker from './Solver.worker.js';
 class GridModel {
 
-    constructor(gridsize){
-
-        this.tiles = this.buildNew(gridsize);
-        this.draggedIndex = null;
-
-    }
-
     grabTile = (position) => {
         let grabposition = null;
-        const nearBlankPosition = checkValidMove(position,this.tiles);
-        if(nearBlankPosition != null){
+        const nearBlankPosition = checkValidMove(position, this.tiles);
+        if(nearBlankPosition != null) {
             grabposition = position;
             this.draggedIndex =  grabposition;
 
@@ -25,15 +17,12 @@ class GridModel {
     };
 
     moveTile = (position) => {
-        //check if blank is next to position, swap tile (number) from position (index) and blank
-        const moveToPosition = checkValidMove(position,this.tiles);
-        if(moveToPosition != null){
-            const temp = this.tiles[moveToPosition];
-            this.tiles[moveToPosition] = this.tiles[position];
-            this.tiles[position] = temp;
-        }
-        // return, is valid
-        return moveToPosition;
+        const blankPosition = this.tiles[ this.tiles.indexOf(this.tiles.length) ];
+        const temp = this.tiles[ blankPosition ];
+        this.tiles[ blankPosition ] = this.tiles[ position ];
+        this.tiles[ position ] = temp;
+
+        return this.tiles
     };
 
     getTiles = () => {
@@ -44,7 +33,7 @@ class GridModel {
     buildNew = (size) => {
         let tiles = getInitTiles(size);
         while(getMisplaced(tiles) === 0 || !this.isSolvable(tiles)){
-            console.log("shuffle once");
+
             shuffleArray(tiles);
         }
 
@@ -57,6 +46,7 @@ class GridModel {
         //tiles = [1,5,9,13,2,6,10,14,3,7,11,15,4,8,12,16];
         //tiles = [3,2,9,13,7,12,4,14,1,11,16,6,8,15,10,5];
         //tiles = [4,2,14,9,10,8,7,6,3,1,15,12,11,16,13,5];
+        this.tiles = tiles;
         return tiles;
     };
 
@@ -76,7 +66,7 @@ class GridModel {
             let row = Math.floor(blank/size);
             let fromBottom = size - row;
 
-            return ((inversions % 2 === 1 && fromBottom % 2 === 0) || (inversions % 2 === 0 && fromBottom % 2 === 1));
+            return ( (inversions % 2 === 1 && fromBottom % 2 === 0) || (inversions % 2 === 0 && fromBottom % 2 === 1) );
         }
 
 
@@ -88,7 +78,7 @@ class GridModel {
         let invArray = arr.map(function(num, i) {
             let inversions = 0;
             for (let j = i + 1; j < arr.length; j++) {
-                if (num !== arr.length && arr[j] !== arr.length && arr[j] < num) {
+                if ( num !== arr.length && arr[j] !== arr.length && arr[j] < num ) {
                     inversions += 1;
                 }
             }
@@ -106,6 +96,7 @@ class GridModel {
 
     getSolution = (cb) => {
 
+
         let worker = new Worker();
         let sequence = this.getTiles();
         let self = this;
@@ -114,7 +105,7 @@ class GridModel {
             self.solution = e.data['solution'];
             cb(self.solution);
         });
-        worker.postMessage({'cmd':'solve', 'sequence':sequence});
+        worker.postMessage({ 'cmd':'solve', 'sequence':sequence });
 
     }
 
@@ -127,7 +118,8 @@ export default GridModel;
 const getInitTiles = (size) => {
     let tiles = [];
     let len = Math.pow(size,2);
-    while(tiles.length < len){
+    while(tiles.length < len) {
+
         tiles.push(tiles.length + 1);
     }
 
@@ -138,9 +130,11 @@ const checkValidMove = (position,tiles) => {
 
     let blank = tiles.indexOf(tiles.length);
     let rowLength = Math.sqrt(tiles.length);
-    if(Math.floor(blank/rowLength) === Math.floor(position/rowLength)){//same row
+    if(Math.floor(blank/rowLength) === Math.floor(position/rowLength)) {//same row
+
         if(blank === position - 1 || blank === position + 1) return blank;
-    }else{
+    } else {
+
         if(blank === position - rowLength || blank === position + rowLength) return blank;
     }
 

@@ -11,6 +11,7 @@ self.onmessage = (e) => {
 
 
 const solvePuzzlePattern = (startSequence) => {
+
     let allMoves = [];
     let moves = null;
     let curArrayState = startSequence.slice(0);
@@ -35,9 +36,11 @@ const solvePuzzlePattern = (startSequence) => {
 const solvePuzzleFringe = (startSequence,pattern) => {
 
     //if there's a pattern, replace not used index in array with "x"
-    if(pattern){
+    if(pattern) {
+
         let i = 0;
-        while(i < pattern.length - 1){
+        while(i < pattern.length - 1) {
+
             if(pattern[i] === "x") startSequence[startSequence.indexOf(i + 1)] = "x";
             if(pattern[i] === "o") startSequence[startSequence.indexOf(i + 1)] = "o";
             i++;
@@ -57,13 +60,12 @@ const solvePuzzleFringe = (startSequence,pattern) => {
     let flimit = getHeuristics(startSequence,size);
     listCache[start] = [0,null];
     const moves = [];
-    //let foundSequence = null;
 
-    while(fringe.length > 0 && !found){
+    while(fringe.length > 0 && !found) {
 
         let fmin = Infinity;
 
-        for(let i = 0; i< fringe.length; i++){
+        for(let i = 0; i< fringe.length; i++) {
 
             const fringeNode = fringe[i];
             const g = listCache[fringeNode][0];
@@ -71,13 +73,13 @@ const solvePuzzleFringe = (startSequence,pattern) => {
             const fringeArr = convertToNumArray(fringeNode);
             const f = g + getHeuristics(fringeArr,size);
 
-            if(f > flimit){
+            if(f > flimit) {
+
                 fmin = Math.min(f,fmin);
                 continue;
             }
 
-            if(getMisplaced(fringeArr) === 0){
-                //console.log("found!!" + fringeArr);
+            if(getMisplaced(fringeArr) === 0) {
                 //construct path back with lookup of parents stored in cache
 
                 let nextStep = fringeNode;
@@ -87,11 +89,10 @@ const solvePuzzleFringe = (startSequence,pattern) => {
                     const nextArr = convertToNumArray(nextStep);
                     const move = nextArr.indexOf(nextArr.length);
                     nextStep = listCache[nextStep][1];
-                    if(nextStep)moves.unshift(move);
+                    if(nextStep) moves.unshift(move);
 
                 }
 
-                //foundSequence = fringeArr;
                 found = true;
                 break;
 
@@ -100,15 +101,18 @@ const solvePuzzleFringe = (startSequence,pattern) => {
             const childNodes = expandNode(fringeNode,parent,size,pattern);
 
             //console.log("children: " + childNodes);
-            childNodes.forEach((child)=> {
+            childNodes.forEach((child) => {
+
                 const childG = g + cost;
-                if(listCache[child]){
+                if(listCache[child]) {
+
                     let cachedG = listCache[child][0];
                     if(cachedG <= childG) return;
                 }
 
                 const index = fringe.indexOf(child);
                 if(index !== -1){
+
                     fringe.splice(index,1);
                     if(index <= i) i--;
                 }
@@ -132,11 +136,11 @@ const solvePuzzleFringe = (startSequence,pattern) => {
 };
 
 const reconstructFromMoves = (moves,sequence) => {
+
     let constructed = sequence;
     let i = 0;
     while(i < moves.length){
 
-        //swap move index with blank (last)
         const moveIndex = moves[i];
         const blankIndex = constructed.indexOf(constructed.length);
         const tempA = constructed[moveIndex];
@@ -187,6 +191,7 @@ const expandNode = (node, parent, size, pattern) => {
 
 
 const getHeuristics = (sequence, size) => {
+
     return manhattan(sequence,size);
 
 };
@@ -201,15 +206,18 @@ const getGridCoordinates = (index,size) => {
 };
 
 const getIndexByCoordinates = (x,y,size) => {
+
     return (y * size) + x;
 
 };
 
 
 const getMisplaced = (set) => {
+
     let misplaced = 0;
     let i = 0;
-    while(i < set.length){
+    while(i < set.length) {
+
         if(set[i] !== "x" && set[i] !== (i + 1) && set[i] !== set.length) misplaced++;
         i++;
     }
@@ -219,19 +227,19 @@ const getMisplaced = (set) => {
 };
 
 const manhattan = (set, size) => {
+
     let cost = 0;
 
     set.forEach((item, index, arr) => {
         //get grid position of current index
-        if(item === arr.length){
+        if(item === arr.length) {
             //don't factor in last number used for blank
         }else{
-            if(item === "x"){
+            if(item === "x") {
 
             }else{
-                let indexCoor = getGridCoordinates(index, size);
-                //get grid position of target (number content of array - 1)
 
+                let indexCoor = getGridCoordinates(index, size);
                 let targetCoor = getGridCoordinates(item - 1, size);
                 let xMoves = Math.abs(indexCoor.x - targetCoor.x);
                 let yMoves = Math.abs(indexCoor.y - targetCoor.y);
@@ -250,9 +258,10 @@ const manhattan = (set, size) => {
 
 //to convert split string into array of numbers, (instead of strings as str.split('') does)
 const convertToNumArray = (str) => {
+
     const arr = str.split(",");
     let i = 0;
-    while(i < arr.length){
+    while(i < arr.length) {
 
         if(arr[i] !== "x") arr[i] = Number(arr[i]);
         i++;
@@ -266,33 +275,33 @@ const getAllMoves = (sequence, size) => {
 
     let moves = [];
 
-    //find index of blank
     const blank = sequence.indexOf(sequence.length);
-    //get grid position of blank
     const blankCoord = getGridCoordinates(blank,size);
-    //add existing surrounding numbers to moves
 
     if(blankCoord.x > 0) {
+
         const left = getIndexByCoordinates(blankCoord.x - 1, blankCoord.y, size);
         moves.push(left);
     }
 
-    if(blankCoord.x < size - 1){
+    if(blankCoord.x < size - 1) {
+
         const right = getIndexByCoordinates(blankCoord.x + 1,blankCoord.y, size);
         moves.push(right);
     }
 
-    if(blankCoord.y > 0){
+    if(blankCoord.y > 0) {
+
         const t = getIndexByCoordinates(blankCoord.x,blankCoord.y - 1, size);
         moves.push(t);
     }
 
-    if(blankCoord.y < size - 1){
+    if(blankCoord.y < size - 1) {
+
         const b = getIndexByCoordinates(blankCoord.x,blankCoord.y + 1, size);
         moves.push(b);
     }
 
-    //moves = shuffleArray(moves);
     return moves;
 };
 

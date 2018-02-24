@@ -2,6 +2,17 @@ import React, { Component } from 'react';
 
 class Tile extends Component{
 
+    constructor(props){
+        super(props);
+
+        this.dragStart = null;
+        this.dragOffset = null;
+
+        this.grabHandler = this.grabHandler.bind(this);
+
+
+    }
+
     grabHandler = (e) => {
 
         let el = this.refs.tile;
@@ -19,6 +30,8 @@ class Tile extends Component{
         const grabX = (e.nativeEvent && e.nativeEvent.touches) ? e.nativeEvent.touches[0].clientX : e.clientX;
         const grabY = (e.nativeEvent && e.nativeEvent.touches) ? e.nativeEvent.touches[0].clientY : e.clientY;
         this.props.onGrab(this.props.index,grabX,grabY,this.props.width,this.props.height);
+
+        //start action with index, offset
     };
 
 
@@ -30,16 +43,17 @@ class Tile extends Component{
 
 
     render(){
-        const {imgSrc, width, height, indexPos, curPos, visible, dragged, dropped, display, matched} = this.props;
+        const { imgSrc, width, height, indexPos, curPos, visible, dragged, dropped, display, matched } = this.props;
 
         const tileStyle = {
-            width:`${width}px`,
-            height:`${height}px`,
+
+            width: `${width}px`,
+            height: `${height}px`,
             backgroundImage: (display === "image") ? `url(${imgSrc})` : `none`,
             backgroundPosition: `${-indexPos.x}px ${-indexPos.y}px`,
             backgroundColor: (matched) ? `white` : `gainsboro`,
-            visibility:`${visible}`,
-            transition:`left 0.1s ease-out, top 0.1s ease-out`,
+            visibility: `${visible}`,
+            transition: `left 0.1s ease-out, top 0.1s ease-out`,
             top:`${curPos.y}px`,
             left:`${curPos.x}px`,
 
@@ -47,14 +61,15 @@ class Tile extends Component{
         };
 
         const droppedStyle = {
-            width:`${width}px`,
-            height:`${height}px`,
+
+            width: `${width}px`,
+            height: `${height}px`,
             backgroundImage: (display === "image") ? `url(${imgSrc})` : `none`,
             backgroundPosition: `${-indexPos.x}px ${-indexPos.y}px`,
             backgroundColor: (matched) ? `white` : `gainsboro`,
-            visibility:`${visible}`,
-            top:`${curPos.y}px`,
-            left:`${curPos.x}px`,
+            visibility: `${visible}`,
+            top: `${curPos.y}px`,
+            left: `${curPos.x}px`,
         };
 
         //return div, set image background and position
@@ -62,18 +77,20 @@ class Tile extends Component{
         const s = (dropped === true || dragged === true) ? droppedStyle : tileStyle;
 
         const txtStyle = {
+
             opacity: (display === 'image') ? `0` : `1`
         };
 
         return(
-            <div className={tileClass} style={s} onMouseDown={this.grabHandler} onTouchStart={this.grabHandler} ref="tile">
-                <div className="TileTxt" style={txtStyle}>
-                    {this.props.id}
+
+            <div className={ tileClass } style={ s } onMouseDown={ this.grabHandler } onTouchStart={ this.grabHandler } ref="tile">
+
+                <div className="TileTxt" style={ txtStyle }>
+                    { this.props.id }
                 </div>
 
             </div>
         )
-
     }
 }
 
