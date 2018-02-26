@@ -3,14 +3,14 @@ import { connect } from 'react-redux'
 import '../App.css';
 import GameView from '../components/GameView'
 
-import { resizeGame } from '../actionCreators'
+import { resizeGame, addImages } from '../actionCreators'
 
 class App extends Component {
 
     constructor(props){
         super(props);
 
-        const images = importAll(require.context('../images/puzzles', false, /\.(png|jpe?g|svg)$/));
+        this.images = importAll(require.context('../images/puzzles', false, /\.(png|jpe?g|svg)$/));
 
         //add images to store
 
@@ -45,7 +45,12 @@ class App extends Component {
     }
 
     componentDidMount() {
+
+        const { dispatch } = this.props;
+        dispatch( addImages(this.images) );
+
         this.sizeGame();
+
         window.addEventListener("resize", this.resizeThrottle.bind(this));
         window.addEventListener("gesturestart", prevent);
         window.addEventListener("touchmove", prevent);

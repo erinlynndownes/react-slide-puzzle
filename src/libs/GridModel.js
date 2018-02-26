@@ -17,7 +17,8 @@ class GridModel {
     };
 
     moveTile = (position) => {
-        const blankPosition = this.tiles[ this.tiles.indexOf(this.tiles.length) ];
+
+        const blankPosition = this.tiles.indexOf(this.tiles.length);
         const temp = this.tiles[ blankPosition ];
         this.tiles[ blankPosition ] = this.tiles[ position ];
         this.tiles[ position ] = temp;

@@ -2,7 +2,6 @@ import * as types from './actions'
 
 
 const appReducer = (state = {}, action) => {
-    console.log("new action: " + action.type);
 
     switch(action.type) {
         case types.REQUEST_SOLUTION:
@@ -11,16 +10,18 @@ const appReducer = (state = {}, action) => {
             });
         case types.RECEIVE_SOLUTION:
             return Object.assign({}, state, {
-                solution:action.solution,
+                solution: action.solution,
                 isSolving : false,
                 showNext: true,
             });
-        case types.START_MOVE:
+        case types.START_SOLUTION_MOVE:
             return Object.assign({}, state, {
+                showNext: false,
                 isShowingSolution: true,
+                solution: action.solution,
                 tiles: action.tiles
             });
-        case types.END_MOVE:
+        case types.END_SOLUTION_MOVE:
             return Object.assign({}, state, {
                 isShowingSolution: false,
                 showNext: action.showNext,
@@ -28,11 +29,12 @@ const appReducer = (state = {}, action) => {
         case types.CHANGE_DISPLAY_TYPE:
             return Object.assign({}, state, {
                 displayType: action.displayType,
+                imgSrc: action.imgSrc
             });
         case types.CHANGE_GRID_SIZE:
             return Object.assign({}, state, {
                 gridSize: action.gridSize,
-                otherSize: action.otherSize
+                tiles: action.tiles
             });
         case types.START_NEW_PUZZLE:
             return Object.assign({}, state, {
@@ -40,18 +42,19 @@ const appReducer = (state = {}, action) => {
             });
         case types.GRAB_TILE:
             return Object.assign({}, state, {
+                dropIndex: null,
                 dragIndex: action.dragIndex,
-                dragOffset: action.dragOffset,
+                dragStart: action.dragStart,
                 dragArea: action.dragArea,
             });
         case types.DRAG_TILE:
             return Object.assign({}, state, {
-                dragIndex: action.index,
                 dragOffset: action.dragOffset,
             });
         case types.DROP_TILE:
             return Object.assign({}, state, {
                 dragIndex: null,
+                dragStart: null,
                 dragOffset: null,
                 dragArea: null,
                 tiles: action.tiles
@@ -59,6 +62,10 @@ const appReducer = (state = {}, action) => {
         case types.RESIZE_GAME:
             return Object.assign({}, state, {
                 viewArea: action.viewArea
+            });
+        case types.ADD_IMAGES:
+            return Object.assign({}, state, {
+                images: action.images
             });
         default:
             return state

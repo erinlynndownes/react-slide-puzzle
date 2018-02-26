@@ -6,6 +6,7 @@ import Puzzle from '../containers/Puzzle'
 const GameView = ({ viewArea, puzzleArea, isSolving  }) => {
 
     const orientation = (Math.min(viewArea.w, viewArea.h) === viewArea.h) ? "landscape" : "portrait";
+    console.log(" puzzle area? " + puzzleArea.w);
 
     let puzzleScale = 1;
 
@@ -24,6 +25,7 @@ const GameView = ({ viewArea, puzzleArea, isSolving  }) => {
         const scaleForHeight = availableGameHeight/puzzleArea.h;
         puzzleScale = scaleForHeight;
         if(( puzzleArea.w ) * scaleForHeight > availableGameWidth - 310) {
+
             puzzleScale = puzzleScale * ( availableGameWidth - 310 )/( puzzleArea.w * scaleForHeight );
         }
 
@@ -36,46 +38,49 @@ const GameView = ({ viewArea, puzzleArea, isSolving  }) => {
         const scaleForWidth = availablePuzzleWidth/( puzzleArea.w + 30 );
         puzzleScale = scaleForWidth;
         if(puzzleArea.h * scaleForWidth > availableGameHeight - 260) {
+
             puzzleScale = puzzleScale * ( availableGameHeight - 260 )/( puzzleArea.h * scaleForWidth );
         }
 
-        availablePuzzleHeight = (puzzleArea.h * puzzleScale);
-        availableGameHeight = Math.min(availablePuzzleHeight + 330, viewArea.h);
+        availablePuzzleHeight = ( puzzleArea.h * puzzleScale );
+        availableGameHeight = Math.min( availablePuzzleHeight + 330, viewArea.h );
     }
 
     const leftpos = (orientation === "landscape") ? ( availablePuzzleWidth - ( puzzleArea.w * puzzleScale ) )/2: ( availablePuzzleWidth - (puzzleArea.w * puzzleScale) )/2 - 15;//2 for border width
-    const leftpercent = (leftpos/availablePuzzleWidth) * 100;
+    const leftpercent = (leftpos/availableGameWidth) * 100;
+
+    console.log(" left percent? " + leftpercent + ", left pos: " + leftpos + ", available puzzle width: " + availablePuzzleWidth + ", available game width: " + availableGameWidth);
     const toppos = (orientation === "landscape") ? ( availablePuzzleHeight - ( puzzleArea.h * puzzleScale ) )/2 - 15: ( availablePuzzleHeight - (puzzleArea.h * puzzleScale) )/2;
-    const toppercent = (toppos/availablePuzzleHeight) * 100;
+    const toppercent = (toppos/availableGameHeight) * 100;
     const uiwidth = (orientation === "landscape") ? 100:  availablePuzzleWidth;
     const uiheight = (orientation === "landscape") ?  availablePuzzleHeight: 100;
     const btnwidth = (orientation === "landscape") ? uiwidth : uiwidth * 0.25;
     const btnheight = (orientation === "landscape") ? uiheight * 0.25 : uiheight;
 
     const gridStyle = {
-        transform:`scale(${puzzleScale})`,
-        left:`${leftpercent}%`,
-        top:`${toppercent}%`
+        transform:`scale(${ puzzleScale })`,
+        left:`${ leftpercent }%`,
+        top:`${ toppercent }%`
     };
 
     const gamecontainerstyle = {
-        width:`${availableGameWidth}px`,
-        height:`${availableGameHeight}px`
+        width:`${ availableGameWidth }px`,
+        height:`${ availableGameHeight }px`
     };
 
     const containerstyle = {
-        width:`${availablePuzzleWidth}px`,
-        height:`${availablePuzzleHeight}px`
+        width:`${ availablePuzzleWidth }px`,
+        height:`${ availablePuzzleHeight }px`
     };
 
     const uistyle = {
-        width:`${uiwidth}px`,
-        height:`${uiheight}px`,
+        width:`${ uiwidth }px`,
+        height:`${ uiheight }px`,
     };
 
     const buttonstyle = {
-        width:`${btnwidth}px`,
-        height:`${btnheight}px`,
+        width:`${ btnwidth }px`,
+        height:`${ btnheight }px`,
         textAlign:`center`
     };
 
@@ -86,9 +91,9 @@ const GameView = ({ viewArea, puzzleArea, isSolving  }) => {
             <div className="wholepage">
                 <h1 className="pagetitle"> React 15-puzzle </h1>
                 <div className="game-area"  >
-                    <div className="game-container"  style={gamecontainerstyle}>
+                    <div className="game-container"  style={ gamecontainerstyle }>
                         <UI navStyle={ uistyle } buttonStyle={ buttonstyle }/>
-                        <Puzzle gridStyle={ gridStyle } containerStyle={ containerstyle }/>
+                        <Puzzle gridStyle={ gridStyle } containerStyle={ containerstyle } puzzleScale={ puzzleScale }/>
                         <Sidebar solving={ isSolving }/>
                     </div>
                 </div>
@@ -102,9 +107,9 @@ const GameView = ({ viewArea, puzzleArea, isSolving  }) => {
     }else{
         return (
             <div className="game-area"  >
-                <div className="game-container"  style={ gamecontainerstyle } >
+                <div className="game-container"  style={ gamecontainerstyle }>
                     <UI navStyle={ uistyle } buttonStyle={ buttonstyle }/>
-                    <Puzzle gridStyle={ gridStyle } containerStyle={ containerstyle }/>
+                    <Puzzle gridStyle={ gridStyle } containerStyle={ containerstyle } puzzleScale={ puzzleScale }/>
                     <Sidebar solving={ isSolving }/>
                 </div>
             </div>

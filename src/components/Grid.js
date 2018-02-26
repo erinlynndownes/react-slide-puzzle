@@ -5,15 +5,18 @@ class Grid extends Component {
 
     render() {
 
-        const { onGrab, src, puzzleArea, gridSize, gridStyle, containerStyle, dragIndex, dropIndex, dragOffset, displayType} = this.props;
+        const { onGrab, imgSrc, puzzleArea, gridSize, gridStyle, dragIndex, dropIndex, dragOffset, displayType} = this.props;
         const tileSize = getTileSize(puzzleArea.w, puzzleArea.h, gridSize);
         let tiles = this.props.tiles;
+        console.log(" grid imgSrc: " + imgSrc);
 
         tiles = tiles.map((item, i, arr) => {
 
 
             const dragged = (dragIndex === i);
             const dropped = (dropIndex === i);
+
+
 
             const imgPos = getPosition(tileSize.width, tileSize.height, item - 1, gridSize);
             let tilePos = getPosition(tileSize.width, tileSize.height, i , gridSize);
@@ -85,22 +88,20 @@ class Grid extends Component {
 
             return (
 
-                <Tile key={i} imgSrc={ src } width={ tileSize.width } height={ tileSize.height } index={ i } id={ item } onGrab={ onGrab } curPos={ tilePos } indexPos={ imgPos } visible={ visible } dragged={dragged} dropped={ dropped } displayType={ displayType } matched={ matched }/>
+                <Tile key={i} imgSrc={ imgSrc } width={ tileSize.width } height={ tileSize.height } index={ i } id={ item } onGrab={ onGrab } curPos={ tilePos } indexPos={ imgPos } visible={ visible } dragged={dragged} dropped={ dropped } displayType={ displayType } matched={ matched }/>
 
             )
         });
 
         return (
 
-            <div className ='grid-container' style={ containerStyle }>
-                <div className="Grid" style={ gridStyle }>
-                    <img alt="background" className="bg-image"
-                         src={src}
-                    />
-                    <div>
-                        {tiles}
-                    </div>
+            <div className="Grid" style={ gridStyle }>
+                <img alt="background" className="bg-image"
+                         src={imgSrc}
+                />
 
+                <div>
+                    {tiles}
                 </div>
             </div>
 
@@ -114,7 +115,7 @@ export default Grid;
 
 const getTileSize = (width,height,gridsize) => {
 
-    return { width:width/gridsize, height:height/gridsize }
+    return { width: width/gridsize, height: height/gridsize }
 };
 
 const getPosition = (tileWidth,tileHeight,gridIndex,gridSize) => {
@@ -129,8 +130,8 @@ const getPosition = (tileWidth,tileHeight,gridIndex,gridSize) => {
 
 const getGridCoordinates = (index,size) => {
 
-    const y = Math.floor(index/size);
-    const x = index - (y * size);
+    const y = Math.floor( index/size );
+    const x = index - ( y * size );
 
     return { x:x, y:y };
 

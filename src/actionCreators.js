@@ -16,29 +16,35 @@ export const changeGridSize = (gridSize) => ({
     tiles: model.buildNew(gridSize)
 })
 
-export const changeDisplayType = (displayType) => {
+export const changeDisplayType = (displayType, imgSrc) => {
 
     return {
+
         type: types.CHANGE_DISPLAY_TYPE,
         displayType,
+        imgSrc
     }
 }
 
-export const grabTile = (dragIndex,dragOffset,dragArea) => {
+export const grabTile = (dragIndex,dragStart,dragArea) => {
 
     if(model.grabTile(dragIndex) === dragIndex) {
+
         return {
+
             type: types.GRAB_TILE,
             dragIndex,
-            dragOffset,
+            dragStart,
             dragArea
         }
     } else {
+
         return {
+
             type: types.GRAB_TILE,
             dragIndex:null,
-            dragArea:null,
-            dragOffset:null
+            dragStart:null,
+            dragArea:null
 
         }
     }
@@ -46,67 +52,72 @@ export const grabTile = (dragIndex,dragOffset,dragArea) => {
 
 export const dragTile = (dragOffset) => ({
 
-    type:types.DRAG_TILE,
+    type: types.DRAG_TILE,
     dragOffset
 })
 
-export const dropTile = (dragIndex,dragOffset,dragArea) => {
+export const dropTile = (dragIndex) => {
 
-    let tiles;
-    if(Math.abs(dragOffset.x) > dragArea.w/2 || Math.abs(dragOffset.y) > dragArea.h/2 ){
-        tiles = model.moveTile(dragIndex);
+    let tiles = model.getTiles();
+    if(dragIndex !== null) {
+
+        tiles = model.moveTile(dragIndex).slice();
     }
 
+
     return {
+
         type: types.DROP_TILE,
+        dropIndex: dragIndex,
         dragIndex: null,
+        dragStart: null,
         dragOffset: null,
         dragArea: null,
-        tiles
+        tiles: tiles
     }
 }
 
-export const startMove = (state) => {
+export const startSolutionMove = (move, remainingmoves) => {
 
-    const { solution } = state;
-    const move = solution.shift();
-    const tiles = model.moveTile(move);
+    let tiles = model.moveTile(move).slice();
 
     return {
-        type:types.START_MOVE,
-        tiles
+        type: types.START_SOLUTION_MOVE,
+        solution: remainingmoves,
+        tiles: tiles
     }
 }
 
-export const endMove = (state) => {
+export const endSolutionMove = () => {
 
-    const { solution } = state;
-    const showNext = solution.length > 0;
     return {
-        type: types.END_MOVE,
-        showNext
+        type: types.END_SOLUTION_MOVE,
+        showNext: true
     }
 }
 
 //is solving true
 export const requestSolution = () => ({
 
-    type:types.REQUEST_SOLUTION,
+    type: types.REQUEST_SOLUTION,
     isSolving:true
 })
 
 
 const receiveSolution = (solution) => ({
 
-    type:types.RECEIVE_SOLUTION,
+    type: types.RECEIVE_SOLUTION,
     solution
 })
 
 export const getSolution = () => {
 
     return (dispatch) => {
+
         dispatch(requestSolution());
+
         callModelSolution().then(solution => {
+
             return dispatch(receiveSolution(solution))
         });
     }
@@ -115,13 +126,20 @@ export const getSolution = () => {
 function callModelSolution() {
 
     return new Promise((resolve, reject) => {
+
         let s = model.getSolution(resolve);
     });
 }
 
 export const resizeGame = (viewArea) => ({
 
-    type:types.RESIZE_GAME,
+    type: types.RESIZE_GAME,
     viewArea
+})
+
+export const addImages = (images) => ({
+
+    type: types.ADD_IMAGES,
+    images
 })
 

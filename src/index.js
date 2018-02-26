@@ -14,19 +14,21 @@ const loggerMiddleware = createLogger()
 
 const initialState = {
 
-    viewArea: {w:window.innerWidth,h:window.innerHeight},
+    viewArea: { w:window.innerWidth, h:window.innerHeight },
     gridSize: 4,
     tiles: null,
-    puzzleArea: {w:768, h:768},
+    puzzleArea: { w:768, h:768 },
     displayType: 'Numbers',
     solution: null,
     isSolving: false,
     showNext: false,
     isShowingSolution: false,
     imgSrc: null,
+    images: [],
     dragIndex: null,
-    dragOffset: {x:0, y:0},
-    dragArea: {w:0, h:0},
+    dragStart: null,
+    dragOffset: null,
+    dragArea: null,
     dropIndex: null
 
 }

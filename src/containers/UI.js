@@ -16,20 +16,32 @@ class UI extends Component {
 
     uiSelectSize(e) {
 
-        const { gridSize } = this.props;
+        const { gridSize , isSolving } = this.props;
+        if(isSolving) return;
         const selectedSize = (gridSize === 4) ? 3 : 4;
         this.props.changeGridSize(selectedSize);
     }
 
     uiSelectType(e) {
 
-        const { selectType } = this.props;
-        this.props.changeDisplayType(selectType);
+        const { selectType , images } = this.props;
+
+
+        let imgSrc = null;
+        if( selectType === 'Image') {
+            let index = Math.floor(Math.random() * Math.floor(images['allKeys'].length - 1));
+
+            imgSrc = images[ images['allKeys'][index] ];
+
+            console.log("dispatch? " + index + ", store: " + imgSrc);
+        }
+        this.props.changeDisplayType(selectType, imgSrc);
     }
 
     uiStartNew(e) {
 
-        const { gridSize } = this.props;
+        const { gridSize , isSolving } = this.props;
+        if(isSolving) return;
         this.props.startNewPuzzle(gridSize);
     }
 
@@ -60,9 +72,11 @@ const getSelectType = (type) => {
 const mapStateToProps = (state) => {
 
     return {
-        gridSize:state.gridSize,
+        gridSize: state.gridSize,
+        images: state.images,
         selectSize: getSelectSize(state.gridSize),
         selectType: getSelectType(state.displayType),
+
 
     }
 }
@@ -79,8 +93,8 @@ const mapDispatchToProps = (dispatch) => {
         changeGridSize: (size) => {
             dispatch(changeGridSize(size))
         },
-        changeDisplayType: (type) => {
-            dispatch(changeDisplayType(type))
+        changeDisplayType: (type, src) => {
+            dispatch(changeDisplayType(type, src))
         }
     }
 }
