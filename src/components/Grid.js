@@ -9,7 +9,6 @@ class Grid extends Component {
         const tileSize = getTileSize(puzzleArea.w, puzzleArea.h, gridSize);
         let tiles = this.props.tiles;
 
-        console.log(" what's the grid drop index??" + dropIndex);
         tiles = tiles.map((item, i, arr) => {
 
 
