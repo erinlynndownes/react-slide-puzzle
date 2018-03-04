@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Grid from '../components/Grid'
-import { grabTile, dropTile, dragTile, startSolutionMove, endSolutionMove } from '../actionCreators'
+import { grabTile, dropTile, dragTile, startSolutionMove, endSolutionMove, solutionComplete } from '../actionCreators'
 
 
 class Puzzle extends Component{
@@ -45,14 +45,14 @@ class Puzzle extends Component{
                 this.props.startSolutionMove(move, remainingMoves);
             } else {
                 //done
-                console.log(" finished solution")
+                this.props.solutionComplete();
             }
 
         }
 
         if(this.props.isShowingSolution && !prevProps.isShowingSolution){
 
-            setTimeout(this.props.endSolutionMove,100)
+            setTimeout(this.props.endSolutionMove,250)
         }
 
     }
@@ -110,13 +110,15 @@ class Puzzle extends Component{
 
         const { dragIndex, dragOffset, dragArea } = this.props;
 
-        let dropIndex = null;
-        if(Math.abs(dragOffset.x) > dragArea.w/4 || Math.abs(dragOffset.y) > dragArea.h/4 ) {
+        let dropIndex = dragIndex;
+
+        //make all dragging unnecessary until it has a home that won't scroll
+        /*if(Math.abs(dragOffset.x) > dragArea.w/4 || Math.abs(dragOffset.y) > dragArea.h/4 ) {
 
             dropIndex = dragIndex;
         } else {
 
-        }
+        }*/
 
         this.props.dropTile(dropIndex);
     };
@@ -124,11 +126,11 @@ class Puzzle extends Component{
 
     render(){
 
-        const {gridSize, imgSrc, puzzleArea, gridStyle, containerStyle, displayType, tiles, dragIndex, dropIndex, dragOffset } = this.props;
+        const {gridSize, imgSrc, defaultImg, puzzleArea, gridStyle, containerStyle, displayType, tiles, dragIndex, dropIndex, dragOffset } = this.props;
 
         return(
             <div className ='grid-container' style={ containerStyle }>
-                <Grid  tiles={ tiles } gridSize={ gridSize } onGrab={ this.handlePieceGrab } imgSrc={ imgSrc } puzzleArea={ puzzleArea } containerSytle={ containerStyle } gridStyle={ gridStyle } dragIndex={ dragIndex } dropIndex={ dropIndex } dragOffset={ dragOffset } displayType={ displayType }/>
+                <Grid  tiles={ tiles } gridSize={ gridSize } onGrab={ this.handlePieceGrab } imgSrc={ imgSrc } defaultImg={ defaultImg } puzzleArea={ puzzleArea } containerSytle={ containerStyle } gridStyle={ gridStyle } dragIndex={ dragIndex } dropIndex={ dropIndex } dragOffset={ dragOffset } displayType={ displayType }/>
             </div>
         )
     }
@@ -150,7 +152,9 @@ const mapStateToProps = (state, ownProps) => {
         dragStart: state.dragStart,
         dragOffset: state.dragOffset,
         dragArea: state.dragArea,
+        dropIndex: state.dropIndex,
         imgSrc: state.imgSrc,
+        defaultImg: state.defaultImg,
         showNext: state.showNext,
         isShowingSolution: state.isShowingSolution,
         gridStyle: ownProps.gridStyle,
@@ -185,6 +189,11 @@ const mapDispatchToProps = (dispatch) => {
         endSolutionMove: () => {
 
             dispatch(endSolutionMove());
+        },
+
+        solutionComplete: () => {
+
+            dispatch(solutionComplete());
         }
 
     }

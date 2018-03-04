@@ -26,6 +26,12 @@ const appReducer = (state = {}, action) => {
                 isShowingSolution: false,
                 showNext: action.showNext,
             });
+        case types.SOLUTION_COMPLETE:
+            return Object.assign({}, state, {
+                isShowingSolution: false,
+                showNext: false,
+                solution:null
+            });
         case types.CHANGE_DISPLAY_TYPE:
             return Object.assign({}, state, {
                 displayType: action.displayType,
@@ -67,10 +73,12 @@ const appReducer = (state = {}, action) => {
             return Object.assign({}, state, {
                 images: action.images
             });
+        case types.SET_DEFAULT_IMAGE:
+            return Object.assign({}, state, {
+                defaultImg: action.defaultImg
+            });
         default:
             return state
-
-
 
     }
 }

@@ -5,17 +5,16 @@ class Grid extends Component {
 
     render() {
 
-        const { onGrab, imgSrc, puzzleArea, gridSize, gridStyle, dragIndex, dropIndex, dragOffset, displayType} = this.props;
+        const { onGrab, imgSrc, defaultImg, puzzleArea, gridSize, gridStyle, dragIndex, dropIndex, dragOffset, displayType} = this.props;
         const tileSize = getTileSize(puzzleArea.w, puzzleArea.h, gridSize);
         let tiles = this.props.tiles;
-        console.log(" grid imgSrc: " + imgSrc);
 
+        console.log(" what's the grid drop index??" + dropIndex);
         tiles = tiles.map((item, i, arr) => {
 
 
             const dragged = (dragIndex === i);
             const dropped = (dropIndex === i);
-
 
 
             const imgPos = getPosition(tileSize.width, tileSize.height, item - 1, gridSize);
@@ -97,7 +96,7 @@ class Grid extends Component {
 
             <div className="Grid" style={ gridStyle }>
                 <img alt="background" className="bg-image"
-                         src={imgSrc}
+                         src={ defaultImg }
                 />
 
                 <div>

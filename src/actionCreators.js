@@ -59,16 +59,18 @@ export const dragTile = (dragOffset) => ({
 export const dropTile = (dragIndex) => {
 
     let tiles = model.getTiles();
+    let dropIndex = tiles.indexOf(tiles.length);
     if(dragIndex !== null) {
 
         tiles = model.moveTile(dragIndex).slice();
     }
 
 
+
     return {
 
         type: types.DROP_TILE,
-        dropIndex: dragIndex,
+        dropIndex: dropIndex,
         dragIndex: null,
         dragStart: null,
         dragOffset: null,
@@ -141,5 +143,17 @@ export const addImages = (images) => ({
 
     type: types.ADD_IMAGES,
     images
+})
+
+export const setDefaultImage = (defaultImg) => ({
+
+    type: types.SET_DEFAULT_IMAGE,
+    defaultImg
+})
+
+export const solutionComplete = () => ({
+
+    type: types.SOLUTION_COMPLETE
+
 })
 

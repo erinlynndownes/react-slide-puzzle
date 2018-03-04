@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import '../App.css';
 import GameView from '../components/GameView'
 
-import { resizeGame, addImages } from '../actionCreators'
+import { resizeGame, addImages, setDefaultImage } from '../actionCreators'
 
 class App extends Component {
 
@@ -48,6 +48,8 @@ class App extends Component {
 
         const { dispatch } = this.props;
         dispatch( addImages(this.images) );
+        //images[ images['allKeys'][index] ]
+        dispatch( setDefaultImage(this.images[ this.images['allKeys'][0] ]));
 
         this.sizeGame();
 

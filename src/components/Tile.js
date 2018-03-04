@@ -31,16 +31,18 @@ class Tile extends Component{
 
 
     componentDidUpdate(){
-        if(this.props.dropped){
-            this.props.moveCompleteHandler();
-        }
+
+
     }
 
 
     render(){
         const { imgSrc, width, height, indexPos, curPos, visible, dragged, dropped, matched } = this.props;
 
-        //console.log("any src...." + imgSrc);
+
+        if(dropped){
+            console.log(" it has been dropped! " + this.props.id)
+        }
 
         const tileStyle = {
 
@@ -64,6 +66,7 @@ class Tile extends Component{
             backgroundPosition: `${-indexPos.x}px ${-indexPos.y}px`,
             backgroundColor: (matched) ? `white` : `gainsboro`,
             visibility: `${visible}`,
+            transition: `left 0.1s ease-out, top 0.1s ease-out`,
             top: `${curPos.y}px`,
             left: `${curPos.x}px`,
         };

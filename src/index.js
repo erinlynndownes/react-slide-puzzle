@@ -25,6 +25,7 @@ const initialState = {
     isShowingSolution: false,
     imgSrc: null,
     images: [],
+    defaultImg: null,
     dragIndex: null,
     dragStart: null,
     dragOffset: null,
