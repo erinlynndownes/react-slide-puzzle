@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import '../App.css';
 import GameView from '../components/GameView'
 
+
 import { resizeGame, addImages, setDefaultImage } from '../actionCreators'
 
 class App extends Component {
@@ -13,8 +14,6 @@ class App extends Component {
         this.images = importAll(require.context('../images/puzzles', false, /\.(png|jpe?g|svg)$/));
 
         //add images to store
-
-        //set puzzlearea to new image area??
 
         this.sizeGame = this.sizeGame.bind(this);
         this.resizeThrottle = this.resizeThrottle.bind(this);
