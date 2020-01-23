@@ -6,7 +6,7 @@ While most configurations of the 15 puzzle are solved within a few seconds, the 
 
 ## Demo
 
-[http://www.erinlynnlouise.net/games/react-puzzle/](http://www.erinlynnlouise.net/games/react-puzzle/)
+[https://slidepuzzletest.erinlynnlouise.net/](http://slidepuzzletest.erinlynnlouise.net/)
 
 ## Getting started
 
